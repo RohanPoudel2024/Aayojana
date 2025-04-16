@@ -1,0 +1,54 @@
+-- Create USER table
+CREATE TABLE user (
+    user_id INTEGER PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL
+);
+
+-- Create CATEGORY table
+CREATE TABLE category (
+    category_id INTEGER PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+-- Create EVENT table
+CREATE TABLE event (
+    event_id INTEGER PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    date DATE NOT NULL,
+    time VARCHAR(50) NOT NULL,
+    available_seats INTEGER NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    category_id INTEGER NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES category(category_id)
+);
+
+-- Create BOOKINGS table
+CREATE TABLE bookings (
+    booking_id INTEGER PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    event_id INTEGER NOT NULL,
+    booking_date DATE NOT NULL,
+    seats_booked INTEGER NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(user_id),
+    FOREIGN KEY (event_id) REFERENCES event(event_id)
+);
+
+-- Create USER_BOOKING table (junction table)
+CREATE TABLE user_booking (
+    user_id INTEGER NOT NULL,
+    booking_id INTEGER NOT NULL,
+    event_id INTEGER NOT NULL,
+    PRIMARY KEY (user_id, booking_id, event_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id),
+    FOREIGN KEY (booking_id) REFERENCES bookings(booking_id),
+    FOREIGN KEY (event_id) REFERENCES event(event_id)
+);
