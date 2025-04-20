@@ -1,0 +1,18 @@
+[33m894e9a4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m inclucing role based auth properly
+[33mfc4c213[m Create user done |\/| (User register)
+[33m011b72e[m Stop tracking db.properties
+[33mc9af975[m working to make the properties file safe
+[33mf0104ce[m file setup completed
+[33m497afe9[m re-arranging file structure
+[33m405b510[m setting up files
+[33mca4eeb6[m Merge pull request #3 from RohanPoudel2024/rohanmain
+[33m5d7b53c[m[33m ([m[1;31morigin/rohanmain[m[33m, [m[1;32mrohanmain[m[33m)[m Db connection with properties files succesful
+[33m3ab6365[m Merge pull request #2 from RohanPoudel2024/rohanmain
+[33m294af90[m working with properties file
+[33mf1f3270[m Merge pull request #1 from RohanPoudel2024/rohanmain
+[33m85562de[m working in utils
+[33md47a0fe[m Working in Login Signup
+[33mb41ca61[m Model And Sql scripts Update
+[33m693d786[m Add new files including test.txt
+[33md307b75[m Add test.txt file
+[33m5829f56[m[33m ([m[1;31mold-origin/main[m[33m)[m Initial commit
