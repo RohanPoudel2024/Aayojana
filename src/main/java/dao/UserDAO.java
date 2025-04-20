@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public class UserDAO {
     public boolean createUser(User user ) throws SQLException {
-        String query = "INSERT INTO user (name, email, password, role) VALUES (?,?,?,?)";
+        String query = "INSERT INTO users (name, email, password, role) VALUES (?,?,?,?)";
 
         String hashedPassword  = hashPassword(user.getPassword());
         user.setPassword(hashedPassword);
@@ -31,8 +31,12 @@ public class UserDAO {
                 System.out.println("Failed in registration");
                 return false;
             }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            System.out.println(e.getErrorCode());
+            if (e.getErrorCode()==1062){
+                System.out.println("Email Already Exist" + "\n" + user.getEmail());
+            }
+            return false;
         }
 
     }
@@ -41,4 +45,21 @@ public class UserDAO {
     public String hashPassword(String password){
         return BCrypt.hashpw(password, BCrypt.gensalt(12));
     }
+
+//    public static void main(String[] args) {
+//        UserDAO dao = new UserDAO();
+//
+//        // Dummy test user
+//        User testUser = new User();
+//        testUser.setName("Rohan Poudel");
+//        testUser.setEmail("rohan@example.com");
+//        testUser.setPassword("rohan123");
+//
+//        try {
+//            dao.createUser(testUser);
+//        } catch (SQLException e) {
+//            System.out.println("Error: " + e.getMessage());
+//        }
+//    }
+
 }
