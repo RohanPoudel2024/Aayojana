@@ -11,6 +11,10 @@ import java.sql.SQLException;
 public class UserDAO {
     public boolean createUser(User user ) throws SQLException {
         String query = "INSERT INTO user (name, email, password, role) VALUES (?,?,?,?)";
+
+        String hashedPassword  = hashPassword(user.getPassword());
+        user.setPassword(hashedPassword);
+
         user.setRole("user");
         try(Connection conn = DBUtils.getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)){
@@ -33,5 +37,8 @@ public class UserDAO {
 
     }
 
-    //Checking existing email while signup
+    //Password Hash Garne method
+    public String hashPassword(String password){
+        return BCrypt.hashpw(password, BCrypt.gensalt(12));
+    }
 }
