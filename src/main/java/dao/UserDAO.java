@@ -1,4 +1,5 @@
 package dao;
+import model.User;
 import org.mindrot.jbcrypt.BCrypt;
 
 import utils.DBUtils;
@@ -8,17 +9,15 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class UserDAO {
-    public boolean createUser(int userId, String name, String email, String password ) throws SQLException {
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-        String role = "user";
-
+    public boolean createUser(User user ) throws SQLException {
         String query = "INSERT INTO user (name, email, password, role) VALUES (?,?,?,?)";
+        user.setRole("user");
         try(Connection conn = DBUtils.getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)){
-            stmt.setString(1,name);
-            stmt.setString(2,email);
-            stmt.setString(3,hashedPassword);
-            stmt.setString(3,role);
+            stmt.setString(1,user.getName());
+            stmt.setString(2,user.getEmail());
+            stmt.setString(3,user.getPassword());
+            stmt.setString(4,user.getRole());
 
             int rowsAffected = stmt.executeUpdate();
             if(rowsAffected>0){
@@ -33,4 +32,6 @@ public class UserDAO {
         }
 
     }
+
+    //Checking existing email while signup
 }
