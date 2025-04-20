@@ -10,8 +10,6 @@ public class Category {
     private LocalDateTime updatedAt;
     private boolean isActive;
 
-    public Category() {}
-
     public Category(int categoryId, String name, String description, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isActive) {
         this.categoryId = categoryId;
         this.name = name;
@@ -24,6 +22,7 @@ public class Category {
     public int getCategoryId() {
         return categoryId;
     }
+
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
@@ -31,6 +30,7 @@ public class Category {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -38,6 +38,7 @@ public class Category {
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -45,6 +46,7 @@ public class Category {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -52,6 +54,7 @@ public class Category {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
+
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
@@ -59,7 +62,8 @@ public class Category {
     public boolean isActive() {
         return isActive;
     }
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
