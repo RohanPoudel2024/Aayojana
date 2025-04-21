@@ -5,11 +5,12 @@
   Time: 1:32 AM
   To change this template use File | Settings | File Templates.
 --%>
+<%@page import="model.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Dashboard - AayoJana</title>
-    <link rel="stylesheet" href="../../assets/css/dashboard.css" >
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/dashboard.css" >
 </head>
 <body>
 <div class="container">

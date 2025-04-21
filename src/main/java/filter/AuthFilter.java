@@ -29,12 +29,12 @@ public class AuthFilter implements Filter {
         String role = user.getRole();
         String uri = request.getRequestURI();
 
-        if(uri.contains("Dashboard") && !"admin".equals(role)){
+        if (uri.contains("Dashboard") && !"admin".equals(role)) {
             response.sendRedirect("EventsServlet");
             return;
         }
 
-        if (uri.contains("EventsServlet") && !"user".equals(role)){
+        if (uri.contains("EventsServlet") && !("user".equals(role) || "admin".equals(role))) {
             response.sendRedirect("Dashboard");
             return;
         }
