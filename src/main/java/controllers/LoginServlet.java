@@ -1,23 +1,40 @@
 package controllers;
 
 import dao.UserDAO;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.User;
 
-public class LoginServlet extends HttpServlet{
-    protected void doPost(HttpServletRequest request, HttpServletResponse response){
+import java.io.IOException;
+import java.sql.SQLException;
+
+public class LoginServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
         UserDAO dao = new UserDAO();
+        try {
+            User user = dao.authUser(email, password);
+            if (user != null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("currentUser", user);
 
-        boolean isValid = dao.loginUser(email,password);
-        if(isValid){
-            HttpSession session =
+                if ("admin".equals(user.getRole())) {
+                    response.sendRedirect("dashboard");
+                } else {
+                    response.sendRedirect("events");
+                }
+            } else {
+                response.sendRedirect("login.jsp?error=Invalid Credentials");
+            }
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+
+
         }
-
-
     }
 }
