@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>Event Details - AayoJana</title>
-    <link rel="stylesheet" href="../../assets/css/eventDetails.css" >
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/eventDetails.css" >
 </head>
 <body>
 <div class="container">
