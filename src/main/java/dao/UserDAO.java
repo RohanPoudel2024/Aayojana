@@ -77,16 +77,4 @@ public class UserDAO {
         }
     }
 
-    public static void main(String[] args) {
-        UserDAO dao = new UserDAO();
-        String email = "rohan@example.com";
-        String password = "rohan123";
-
-
-        boolean isLoggedIn = dao.loginUser(email, password);
-        if (isLoggedIn == true) {
-            System.out.println("login successful");
-        }
-
-    }
 }
