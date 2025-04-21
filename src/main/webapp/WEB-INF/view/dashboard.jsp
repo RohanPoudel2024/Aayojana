@@ -11,6 +11,6 @@
     <title>Title</title>
 </head>
 <body>
-
+<h1>Weome to Admin page</h1>
 </body>
 </html>

@@ -2,6 +2,7 @@ package controllers;
 
 import dao.UserDAO;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +12,7 @@ import model.User;
 import java.io.IOException;
 import java.sql.SQLException;
 
+@WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         String email = request.getParameter("email");
@@ -24,9 +26,9 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("currentUser", user);
 
                 if ("admin".equals(user.getRole())) {
-                    response.sendRedirect("dashboard");
+                    response.sendRedirect("Dashboard");
                 } else {
-                    response.sendRedirect("events");
+                    response.sendRedirect("EventsServlet");
                 }
             } else {
                 response.sendRedirect("login.jsp?error=Invalid Credentials");
@@ -36,5 +38,10 @@ public class LoginServlet extends HttpServlet {
 
 
         }
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request,response);
+
     }
 }

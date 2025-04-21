@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -618,7 +617,7 @@
             </ul>
         </nav>
         <div class="auth-buttons">
-            <a href="#" class="btn btn-outline">Login</a>
+            <a href="${pageContext.request.contextPath}/login" class="btn btn-outline">Login</a>
             <a href="${pageContext.request.contextPath}/signup" class="btn btn-primary">Sign Up</a>
 
         </div>
