@@ -1,4 +1,5 @@
 package utils;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,6 +15,9 @@ public class DBUtils {
         try(InputStream is = DBUtils.class.getClassLoader().getResourceAsStream("db.properties")){
             Properties prop = new Properties();
             prop.load(is);
+            if (is == null) {
+                throw new FileNotFoundException("db.properties file not found!");
+            }
             Class.forName(prop.getProperty("db.driver"));
             URL = prop.getProperty("db.url");
             USER = prop.getProperty("db.username");

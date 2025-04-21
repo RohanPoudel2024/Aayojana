@@ -47,46 +47,31 @@ public class UserDAO {
         return BCrypt.hashpw(password, BCrypt.gensalt(12));
     }
 
-    public boolean loginUser(String email, String password) {
-        String query = "SELECT * FROM users where email = ?";
-        try (Connection conn = DBUtils.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, email);
+
+    public User authUser(String email, String password) throws SQLException {
+        String query = "SELECT * FROM users WHERE email =?";
+        try(Connection conn = DBUtils.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+            stmt.setString(1,email);
+
             ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+                String storedHash = rs.getString("password");
+                if (BCrypt.checkpw(password,storedHash)){
+                    User user = new User();
+                    user.setName(rs.getString("name"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPassword(rs.getString("password"));
+                    user.setRole(rs.getString("role"));
 
-            if (rs.next()) {
-                String stPassword = rs.getString("password");
-                String role = rs.getString("role");
+                    return user;
 
-                if (BCrypt.checkpw(password, stPassword)) {
-                    System.out.println("User Details \n"+ rs.getString("role")+ "\n" + rs.getString("name"));
-                    return true;
-                } else {
-                    System.out.println("Invalid password.");
-                    return false;
                 }
-            } else {
-                System.out.println("User with this email does not exist.");
-                return false;
             }
-
-
-        } catch (SQLException e) {
-            System.out.println("Error during login: " + e.getMessage());
-            return false;
+        }catch (SQLException e){
+            System.out.println("Error during authUser: " + e.getMessage());
         }
+        return null;
     }
 
-    public static void main(String[] args) {
-        UserDAO dao = new UserDAO();
-        String email = "rohan@example.com";
-        String password = "rohan123";
-
-
-        boolean isLoggedIn = dao.loginUser(email, password);
-        if (isLoggedIn == true) {
-            System.out.println("login successful");
-        }
-
-    }
 }
