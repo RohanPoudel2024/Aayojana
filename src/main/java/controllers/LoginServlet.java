@@ -41,7 +41,20 @@ public class LoginServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request,response);
-
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("currentUser") : null;
+        if (user != null) {
+            // Already logged in — redirect based on role
+            if ("admin".equals(user.getRole())) {
+                response.sendRedirect("Dashboard");
+            } else {
+                response.sendRedirect("EventsServlet");
+            }
+        } else {
+            // Not logged in — show login page
+            request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);
+        }
     }
+
 }
+
