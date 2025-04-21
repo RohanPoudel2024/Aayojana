@@ -832,9 +832,9 @@
     <div class="container">
         <div class="footer-content">
             <div class="footer-column">
-                <h3>Aayojana</h3>
-                <p>The ultimate event management platform for organizers and attendees.</p>
-                <div class="social-links">
+                <h3>AayoJana</h3>
+                <p>The platform for organizers and attendees.</p>
+                <div class="social-linultimate event management ks">
                     <a href="#"><i class="fab fa-facebook-f"></i></a>
                     <a href="#"><i class="fab fa-twitter"></i></a>
                     <a href="#"><i class="fab fa-instagram"></i></a>
