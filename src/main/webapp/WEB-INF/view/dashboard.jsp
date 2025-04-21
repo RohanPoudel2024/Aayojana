@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>Dashboard - AayoJana</title>
-    <link rel="stylesheet" href="../../assets/css/dashboard.css" >
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/dashboard.css" >
 </head>
 <body>
 <div class="container">
