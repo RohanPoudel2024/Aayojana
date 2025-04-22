@@ -4,6 +4,7 @@ import model.User;
 import org.mindrot.jbcrypt.BCrypt;
 
 import utils.DBUtils;
+import utils.PasswordHasher;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +15,7 @@ public class UserDAO {
     public boolean createUser(User user) throws SQLException {
         String query = "INSERT INTO users (name, email, password, role) VALUES (?,?,?,?)";
 
-        String hashedPassword = hashPassword(user.getPassword());
+        String hashedPassword = PasswordHasher.hashPassword(user.getPassword());
         user.setPassword(hashedPassword);
 
         user.setRole("user");
@@ -43,11 +44,6 @@ public class UserDAO {
 
     }
 
-    //Password Hash Garne method
-    public String hashPassword(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt(12));
-    }
-
 
     public User authUser(String email, String password) throws SQLException {
         String query = "SELECT * FROM users WHERE email =?";
@@ -58,7 +54,7 @@ public class UserDAO {
             ResultSet rs = stmt.executeQuery();
             if(rs.next()){
                 String storedHash = rs.getString("password");
-                if (BCrypt.checkpw(password,storedHash)){
+                if (PasswordHasher.checkPassword(password,storedHash)){
                     User user = new User();
                     user.setName(rs.getString("name"));
                     user.setEmail(rs.getString("email"));
