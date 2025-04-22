@@ -47,7 +47,6 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("currentUser") : null;
         if (user != null) {
-            // Already logged in — redirect based on role
             if ("admin".equals(user.getRole())) {
                 response.sendRedirect("Dashboard");
             } else {
