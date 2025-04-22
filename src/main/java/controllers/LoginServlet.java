@@ -31,12 +31,15 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect("EventsServlet");
                 }
             } else {
-                response.sendRedirect("login.jsp?error=Invalid Credentials");
+                request.setAttribute("error","Please Enter Correct Password");
+                request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request,response);
             }
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
 
 
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -44,14 +47,12 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("currentUser") : null;
         if (user != null) {
-            // Already logged in — redirect based on role
             if ("admin".equals(user.getRole())) {
                 response.sendRedirect("Dashboard");
             } else {
                 response.sendRedirect("EventsServlet");
             }
         } else {
-            // Not logged in — show login page
             request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);
         }
     }

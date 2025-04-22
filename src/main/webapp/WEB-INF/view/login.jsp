@@ -32,6 +32,11 @@
                 <input type="password" id="password" name="password" placeholder="Input" required>
                 <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">⊙</button>
             </div>
+            <% String error = (String) request.getAttribute("error");
+                if (error != null) { %>
+            <p style="color:red; text-align:center;"><%= error %></p>
+            <% } %>
+
             <div class="forgot-password">
                 <a href="forgot-password.jsp">Forgot password?</a>
             </div>
