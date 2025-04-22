@@ -1,4 +1,5 @@
 package dao;
+import jakarta.servlet.http.HttpServletRequest;
 import model.User;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -82,5 +83,4 @@ public class UserDAO {
             return rs.next();
         }
     }
-
 }
