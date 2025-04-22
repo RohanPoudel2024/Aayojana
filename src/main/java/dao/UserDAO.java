@@ -2,7 +2,6 @@ package dao;
 import model.User;
 
 import utils.DBUtils;
-import utils.PasswordHasher;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,9 +11,6 @@ import java.sql.SQLException;
 public class UserDAO {
     public boolean createUser(User user) throws SQLException {
         String query = "INSERT INTO users (name, email, password, role) VALUES (?,?,?,?)";
-
-        String hashedPassword = PasswordHasher.hashPassword(user.getPassword());
-        user.setPassword(hashedPassword);
 
         user.setRole("user");
         try (Connection conn = DBUtils.getConnection();
@@ -73,4 +69,5 @@ public class UserDAO {
             return rs.next();
         }
     }
+
 }
