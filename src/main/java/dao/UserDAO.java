@@ -73,5 +73,14 @@ public class UserDAO {
         }
         return null;
     }
+    public boolean emailExists(String email) throws SQLException {
+        String query = "SELECT email FROM users WHERE email = ?";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }
+    }
 
 }

@@ -31,12 +31,15 @@ public class LoginServlet extends HttpServlet {
                     response.sendRedirect("EventsServlet");
                 }
             } else {
-                response.sendRedirect("login.jsp?error=Invalid Credentials");
+                request.setAttribute("error","Please Enter Correct Password");
+                request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request,response);
             }
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
 
 
+        } catch (ServletException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -51,7 +54,6 @@ public class LoginServlet extends HttpServlet {
                 response.sendRedirect("EventsServlet");
             }
         } else {
-            // Not logged in — show login page
             request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);
         }
     }
