@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.User;
+import service.AuthService;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -17,10 +18,10 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        User user = new User();
 
-        UserDAO dao = new UserDAO();
         try {
-            User user = dao.authUser(email, password);
+            user = AuthService.validateLogin(email, password);
             if (user != null) {
                 HttpSession session = request.getSession();
                 session.setAttribute("currentUser", user);
