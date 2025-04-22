@@ -1,7 +1,5 @@
 package dao;
-import jakarta.servlet.http.HttpServletRequest;
 import model.User;
-import org.mindrot.jbcrypt.BCrypt;
 
 import utils.DBUtils;
 import utils.PasswordHasher;
@@ -45,7 +43,7 @@ public class UserDAO {
     }
 
 
-    public User authUser(String email, String password) throws SQLException {
+    public User validateUser(String email) throws SQLException {
         String query = "SELECT * FROM users WHERE email =?";
         try(Connection conn = DBUtils.getConnection();
             PreparedStatement stmt = conn.prepareStatement(query)){
@@ -53,8 +51,6 @@ public class UserDAO {
 
             ResultSet rs = stmt.executeQuery();
             if(rs.next()){
-                String storedHash = rs.getString("password");
-                if (PasswordHasher.checkPassword(password,storedHash)){
                     User user = new User();
                     user.setName(rs.getString("name"));
                     user.setEmail(rs.getString("email"));
@@ -62,8 +58,6 @@ public class UserDAO {
                     user.setRole(rs.getString("role"));
 
                     return user;
-
-                }
             }
         }catch (SQLException e){
             System.out.println("Error during authUser: " + e.getMessage());
