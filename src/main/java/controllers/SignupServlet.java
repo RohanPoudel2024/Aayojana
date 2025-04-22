@@ -27,6 +27,12 @@ public class SignupServlet extends HttpServlet {
         UserDAO dao = new UserDAO();
 
         try {
+            if (dao.emailExists(email)) {
+                request.setAttribute("error", "Email already exists! in our records");
+                request.getRequestDispatcher("/WEB-INF/view/signup.jsp").forward(request, response);
+                return;
+            }
+
             boolean isCreated = dao.createUser(user);
             if (isCreated) {
                 request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);

@@ -5,7 +5,8 @@
   Time: 1:32 AM
   To change this template use File | Settings | File Templates.
 --%>
-<%@page import="model.User" %>git
+<%@ page session="true" %>
+<%@page import="model.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -34,10 +35,19 @@
                 <a href="#">Reports</a>
             </div>
             <div class="user">
-                <span>User Account</span>
+                <%User user = (User) session.getAttribute("currentUser");
+                if (user !=null){
+
+                %>
+                <span><%=user.getName()%></span>
                 <span class="icon">🔔</span>
                 <span class="icon">👤</span>
             </div>
+            <%
+                } else {
+                    response.sendRedirect("login.jsp");
+                }
+            %>
         </div>
         <div class="stats-section">
             <h2>Key Stats Overview</h2>

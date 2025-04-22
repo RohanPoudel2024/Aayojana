@@ -24,6 +24,11 @@
             <input type="email" id="email" name="email" placeholder="Input" required>
         </div>
 
+        <% String error = (String) request.getAttribute("error");
+            if (error != null) { %>
+        <p style="color:red; text-align:center;"><%= error %></p>
+        <% } %>
+
         <div class="form-group">
             <label for="password">Password</label>
             <div class="password-container">
@@ -39,10 +44,6 @@
 
         <button type="submit" class="signup-button">Sign Up</button>
     </form>
-    <% String error = (String) request.getAttribute("errorMessage");
-        if (error != null) { %>
-    <p style="color:red; text-align:center;"><%= error %></p>
-    <% } %>
 
     <p class="divider">Or sign up with</p>
 
@@ -61,11 +62,7 @@
 <script>
     function togglePasswordVisibility() {
         var passwordInput = document.getElementById("password");
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-        } else {
-            passwordInput.type = "password";
-        }
+        passwordInput.type = (passwordInput.type === "password") ? "text" : "password";
     }
 </script>
 </body>
