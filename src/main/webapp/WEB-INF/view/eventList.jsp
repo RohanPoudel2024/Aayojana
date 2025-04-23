@@ -22,7 +22,19 @@
 <div class="container">
     <div class="header">
         <div class="logo">AYO-JANA</div>
-        <button class="sign-in">Sign In</button>
+        <%
+            if (session.getAttribute("currentUser") != null) {
+        %>
+        <form action="logout" method="post">
+            <button class="sign-in">Logout</button>
+        </form>
+        <%
+        } else {
+        %>
+        <a href="${pageContext.request.contextPath}/login" class="sign-in">Login</a>
+        <%
+            }
+        %>
     </div>
     <div class="hero-section">
         <div class="hero-content">
