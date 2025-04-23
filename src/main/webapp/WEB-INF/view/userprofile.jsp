@@ -1,4 +1,4 @@
-<%--
+<%@ page import="model.User" %><%--
   Created by IntelliJ IDEA.
   User: rupsa
   Date: 22-Apr-25
@@ -6,6 +6,12 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%--<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>--%>
+<%
+    User currentUser = (User) session.getAttribute("currentUser");
+    String userName = currentUser.getName();
+    String emailAddress = currentUser.getEmail();
+%>
 <html>
 <head>
     <title>User Profile - AayoJana</title>
@@ -42,11 +48,11 @@
                 <form>
                     <div class="form-group">
                         <label>Full Name</label>
-                        <input type="text" value="User Account" readonly>
+                        <input type="text" value="<%=userName%>" readonly>
                     </div>
                     <div class="form-group">
                         <label>Email Address</label>
-                        <input type="email" value="user@account.com" readonly>
+                        <input type="email" value="<%=emailAddress%>" readonly>
                     </div>
                     <div class="form-group">
                         <label>Phone Number</label>

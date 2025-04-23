@@ -2,17 +2,16 @@ package model;
 
 public class User {
     private int userId;
-    private String name;
-    private String email;
-    private String password;
-    private String role;
+    private String name, email,password,role, phone, photo;
 
-    public User(int userId, String name, String email, String password, String role) {
-        this.userId = userId;
+
+    public User(int id, String name, String email, String phone, String photo, String password) {
+        this.userId = id;
         this.name = name;
         this.email = email;
+        this.phone = phone;
+        this.photo = photo;
         this.password = password;
-        this.role = role;
     }
 
     public User() {
@@ -59,5 +58,13 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public String getPhone() { return phone; }
+
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getPhoto() { return photo; }
+
+    public void setPhoto(String photo) { this.photo = photo; }
 }
 

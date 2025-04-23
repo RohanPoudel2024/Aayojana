@@ -67,7 +67,7 @@ public class UserDAO {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             return rs.next();
+
         }
     }
-
 }
