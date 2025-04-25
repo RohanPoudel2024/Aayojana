@@ -573,6 +573,18 @@
                 gap: 40px;
             }
         }
+        .sign-in {
+            background: linear-gradient(90deg, #4a00e0, #8e2de2);
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
 
         @media (max-width: 768px) {
             nav {
@@ -616,11 +628,23 @@
                 <li><a href="#">Contact</a></li>
             </ul>
         </nav>
+        <%
+            if (session.getAttribute("currentUser") != null) {
+        %>
+
+        <form action="logout" method="post">
+            <button class="sign-in">Logout</button>
+        </form>
+        <%
+        } else {
+        %>
         <div class="auth-buttons">
             <a href="${pageContext.request.contextPath}/login" class="btn btn-outline">Login</a>
             <a href="${pageContext.request.contextPath}/signup" class="btn btn-primary">Sign Up</a>
-
         </div>
+        <%
+            }
+        %>
     </div>
 </header>
 

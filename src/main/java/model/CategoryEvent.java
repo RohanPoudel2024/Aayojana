@@ -11,7 +11,6 @@ public class CategoryEvent {
     public CategoryEvent() {
     }
 
-    // Parameterized constructor
     public CategoryEvent(int categoryId, int eventId) {
         this.categoryId = categoryId;
         this.eventId = eventId;

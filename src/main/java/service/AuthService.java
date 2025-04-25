@@ -15,4 +15,18 @@ public class AuthService {
         }
         return null;
     }
+
+    public static boolean signUp(String name, String email, String password) throws SQLException {
+        UserDAO dao = new UserDAO();
+        if(dao.emailExists(email)){
+            return false;
+        }
+        String hashedPassword = PasswordHasher.hashPassword(password);
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPassword(hashedPassword);
+//        user.setRole("user");
+        return dao.createUser(user);
+    }
 }

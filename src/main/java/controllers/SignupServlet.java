@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.User;
+import service.AuthService;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,27 +19,17 @@ public class SignupServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setRole("user");
-
-        UserDAO dao = new UserDAO();
-
         try {
-            if (dao.emailExists(email)) {
+            boolean userDetails = AuthService.signUp(name,email,password);
+            if (userDetails!=true) {
                 request.setAttribute("error", "Email already exists! in our records");
                 request.getRequestDispatcher("/WEB-INF/view/signup.jsp").forward(request, response);
                 return;
             }
-
-            boolean isCreated = dao.createUser(user);
-            if (isCreated) {
+            if (userDetails) {
                 request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);
             } else {
                 request.setAttribute("errorMessage", "Signup failed! Try again.");
-                request.getRequestDispatcher("signup.jsp").forward(request, response);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
