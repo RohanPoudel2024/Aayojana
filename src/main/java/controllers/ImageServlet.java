@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.User;
-import utils.DBConnection;
+import utils.DBUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,7 +33,7 @@ public class ImageServlet extends HttpServlet {
         try {
             int userId = Integer.parseInt(userIdStr);
             
-            connection = DBConnection.getConnection();
+            connection = DBUtils.getConnection();
             statement = connection.prepareStatement("SELECT photo FROM users WHERE id = ?");
             statement.setInt(1, userId);
             resultSet = statement.executeQuery();
