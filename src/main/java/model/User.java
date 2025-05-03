@@ -7,7 +7,7 @@ public class User {
     private String password;
     private String role;
     private String phone;
-    private byte[] imageData; // Changed from String photo to byte[] imageData
+    private byte[] imageData;
 
     public User(int id, String name, String email, String phone, byte[] imageData, String password) {
         this.userId = id;
@@ -78,7 +78,6 @@ public class User {
         this.imageData = imageData;
     }
 
-    // Method to check if user has profile image
     public boolean hasProfileImage() {
         return imageData != null && imageData.length > 0;
     }
