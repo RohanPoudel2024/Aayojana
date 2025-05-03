@@ -1,7 +1,7 @@
 package dao;
 
 import model.User;
-import utils.DBConnection;
+import utils.DBUtils;
 
 import java.io.InputStream;
 import java.sql.Connection;
@@ -14,7 +14,7 @@ public class UserActivityDAO {
     public boolean updateProfile(User user) {
         String sql = "UPDATE users SET name = ?, email = ?, phone = ?, photo = ? WHERE id = ?";
         
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             
             statement.setString(1, user.getName());
@@ -46,7 +46,7 @@ public class UserActivityDAO {
     public User getUserById(int userId) throws SQLException {
         String sql = "SELECT * FROM users WHERE id = ?";
         
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             
             statement.setInt(1, userId);
@@ -75,7 +75,7 @@ public class UserActivityDAO {
     public boolean saveImageAsBlob(int userId, InputStream imageStream) {
         String sql = "UPDATE users SET photo = ? WHERE id = ?";
         
-        try (Connection connection = DBConnection.getConnection();
+        try (Connection connection = DBUtils.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             
             byte[] imageData = imageStream.readAllBytes();
@@ -101,7 +101,7 @@ public class UserActivityDAO {
         ResultSet resultSet = null;
         
         try {
-            connection = DBConnection.getConnection();
+            connection = DBUtils.getConnection();
             statement = connection.prepareStatement(sql);
             statement.setString(1, email);
             
