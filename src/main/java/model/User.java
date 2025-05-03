@@ -2,22 +2,25 @@ package model;
 
 public class User {
     private int userId;
-    private String name, email,password,role, phone, photo;
+    private String name;
+    private String email;
+    private String password;
+    private String role;
+    private String phone;
+    private byte[] imageData; // Changed from String photo to byte[] imageData
 
-
-    public User(int id, String name, String email, String phone, String photo, String password) {
+    public User(int id, String name, String email, String phone, byte[] imageData, String password) {
         this.userId = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.photo = photo;
+        this.imageData = imageData;
         this.password = password;
     }
 
     public User() {
 
     }
-
 
     public int getUserId() {
         return userId;
@@ -59,12 +62,25 @@ public class User {
         this.role = role;
     }
 
-    public String getPhone() { return phone; }
+    public String getPhone() {
+        return phone;
+    }
 
-    public void setPhone(String phone) { this.phone = phone; }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-    public String getPhoto() { return photo; }
+    public byte[] getImageData() {
+        return imageData;
+    }
 
-    public void setPhoto(String photo) { this.photo = photo; }
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
+    }
+
+    // Method to check if user has profile image
+    public boolean hasProfileImage() {
+        return imageData != null && imageData.length > 0;
+    }
 }
 
