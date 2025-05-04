@@ -56,7 +56,7 @@
         </button>
     </div>
 
-    <p class="login-link">Already have an account? <a href="login.jsp">Sign in</a></p>
+    <p class="login-link">Already have account? <a href="login.jsp">Sign in</a></p>
 </div>
 
 <script>
