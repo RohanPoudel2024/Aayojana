@@ -27,6 +27,23 @@ public class CategoryDAO {
         return categories;
     }
     
+    public List<Category> getActiveCategories() throws SQLException {
+        List<Category> categories = new ArrayList<>();
+        String sql = "SELECT * FROM category WHERE is_active = TRUE ORDER BY name";
+        
+        try (Connection conn = DBUtils.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                Category category = extractCategoryFromResultSet(rs);
+                categories.add(category);
+            }
+        }
+        
+        return categories;
+    }
+    
     public Category getCategoryById(int categoryId) throws SQLException {
         String sql = "SELECT * FROM category WHERE id = ?";
         

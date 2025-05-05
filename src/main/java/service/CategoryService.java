@@ -25,8 +25,12 @@ public class CategoryService {
     }
     
     public List<Category> getActiveCategories() {
-        
-        return new ArrayList<>();
+        try {
+            return categoryDAO.getActiveCategories();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return List.of(); // Return empty list on error
+        }
     }
     
     public Category getCategoryById(int categoryId) {
