@@ -19,7 +19,7 @@
         <div class="logo">AYO-JANA</div>
         <a href="${pageContext.request.contextPath}/Dashboard" class="active"><span class="icon">📊</span>Dashboard</a>
         <a href="${pageContext.request.contextPath}/admin/users"><span class="icon">👥</span>Users</a>
-        <a href="#"><span class="icon">🎉</span>Events</a>
+        <a href="${pageContext.request.contextPath}/admin/events"><span class="icon">🎉</span>Events</a>
         <a href="#"><span class="icon">📋</span>Reports</a>
         <a href="#"><span class="icon">⚙️</span>Settings</a>
         <div class="user-account">

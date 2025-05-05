@@ -6,10 +6,10 @@ CREATE TABLE users (
                        password VARCHAR(100),
                        role VARCHAR(50),
                        phone VARCHAR(20),
-                       photo BLOB
+                       photo MEDIUMBLOB
 );
 
--- Create events table
+-- Create events table with image field
 CREATE TABLE events (
                         id INT AUTO_INCREMENT PRIMARY KEY,
                         title VARCHAR(100),
@@ -17,7 +17,8 @@ CREATE TABLE events (
                         date DATE,
                         time TIME,
                         available_seats INT,
-                        price DECIMAL(10,2)
+                        price DECIMAL(10,2),
+                        image MEDIUMBLOB
 );
 
 -- Create category table
