@@ -2,6 +2,8 @@ package model;
 
 import java.time.LocalDateTime;
 
+
+
 public class Category {
     private int categoryId;
     private String name;
@@ -9,6 +11,10 @@ public class Category {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean isActive;
+
+    public Category (){
+
+    }
 
     public Category(int categoryId, String name, String description, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isActive) {
         this.categoryId = categoryId;

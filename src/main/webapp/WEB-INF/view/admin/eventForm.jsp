@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="model.User" %>
 <%@ page import="model.Event" %>
+<%@ page import="model.Category" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.text.DecimalFormat" %>
 <%
@@ -233,6 +234,27 @@
                             <label for="price">Price (₹)<span class="required">*</span></label>
                             <input type="number" id="price" name="price" value="<%= price %>" min="0" step="0.01" required>
                         </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="categoryId">Category<span class="required">*</span></label>
+                        <select id="categoryId" name="categoryId" required>
+                            <option value="">-- Select Category --</option>
+                            <% 
+                                // Get list of active categories from request attribute 
+                                List<Category> categories = (List<Category>) request.getAttribute("categories");
+                                if (categories != null) {
+                                    for (Category cat : categories) {
+                                        if (cat.isActive()) {
+                                            boolean selected = !isNewEvent && event.getCategoryId() == cat.getCategoryId();
+                            %>
+                                            <option value="<%= cat.getCategoryId() %>" <%= selected ? "selected" : "" %>><%= cat.getName() %></option>
+                            <%
+                                        }
+                                    }
+                                }
+                            %>
+                        </select>
                     </div>
                     
                     <div class="form-group">

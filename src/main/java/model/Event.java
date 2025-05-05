@@ -10,14 +10,16 @@ public class Event {
     private String time;
     private int availableSeats;
     private double price;
-    private int categoryId;
-    private byte[] imageData; // Add this field for image storage
+    private int categoryId;  // Direct reference to a single category
+    private byte[] imageData;
     
     // Default constructor
     public Event() {
     }
 
-    public Event(int eventId, String title, String location, Date date, String time, int availableSeats, double price, int categoryId) {
+    // Constructor with fields
+    public Event(int eventId, String title, String location, Date date, String time, 
+                int availableSeats, double price, int categoryId) {
         this.eventId = eventId;
         this.title = title;
         this.location = location;
@@ -93,7 +95,6 @@ public class Event {
         this.categoryId = categoryId;
     }
     
-    // New getters and setters for image data
     public byte[] getImageData() {
         return imageData;
     }
@@ -102,7 +103,6 @@ public class Event {
         this.imageData = imageData;
     }
     
-    // Helper method to check if event has an image
     public boolean hasImage() {
         return imageData != null && imageData.length > 0;
     }

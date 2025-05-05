@@ -20,6 +20,7 @@
         <a href="${pageContext.request.contextPath}/Dashboard" class="active"><span class="icon">📊</span>Dashboard</a>
         <a href="${pageContext.request.contextPath}/admin/users"><span class="icon">👥</span>Users</a>
         <a href="${pageContext.request.contextPath}/admin/events"><span class="icon">🎉</span>Events</a>
+        <a href="${pageContext.request.contextPath}/admin/categories"><span class="icon">🏷️</span>Categories</a>
         <a href="#"><span class="icon">📋</span>Reports</a>
         <a href="#"><span class="icon">⚙️</span>Settings</a>
         <div class="user-account">
@@ -90,6 +91,14 @@
                         <p class="card-number">₹125,000</p>
                     </div>
                     <a href="#" class="card-link">Financial Reports</a>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🏷️</div>
+                    <div class="card-info">
+                        <h3>Categories</h3>
+                        <p class="card-number">12</p>
+                    </div>
+                    <a href="${pageContext.request.contextPath}/admin/categories" class="card-link">Manage Categories</a>
                 </div>
             </div>
         </div>

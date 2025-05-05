@@ -10,7 +10,9 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import model.Event;
 import model.User;
+import model.Category;
 import service.EventService;
+import service.CategoryService;
 
 import java.io.IOException;
 import java.util.List;
@@ -110,6 +112,10 @@ public class AdminEventsServlet extends HttpServlet {
     private void showNewForm(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
+        CategoryService categoryService = new CategoryService();
+        List<Category> activeCategories = categoryService.getActiveCategories();
+        request.setAttribute("categories", activeCategories);
+        
         request.getRequestDispatcher("/WEB-INF/view/admin/eventForm.jsp").forward(request, response);
     }
     
@@ -124,6 +130,10 @@ public class AdminEventsServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/admin/events");
             return;
         }
+        
+        CategoryService categoryService = new CategoryService();
+        List<Category> activeCategories = categoryService.getActiveCategories();
+        request.setAttribute("categories", activeCategories);
         
         request.setAttribute("event", event);
         request.getRequestDispatcher("/WEB-INF/view/admin/eventForm.jsp").forward(request, response);
