@@ -45,7 +45,7 @@ public class EventsDAO {
     }
     
     public boolean createEvent(Event event) throws SQLException {
-        String sql = "INSERT INTO events (title, location, date, time, available_seats, price, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO events (title, location, date, time, available_seats, price, category_id, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -56,12 +56,13 @@ public class EventsDAO {
             pstmt.setString(4, event.getTime());
             pstmt.setInt(5, event.getAvailableSeats());
             pstmt.setDouble(6, event.getPrice());
+            pstmt.setInt(7, event.getCategoryId());
             
             // Handle image data
             if (event.getImageData() != null) {
-                pstmt.setBytes(7, event.getImageData());
+                pstmt.setBytes(8, event.getImageData());
             } else {
-                pstmt.setNull(7, java.sql.Types.BLOB);
+                pstmt.setNull(8, java.sql.Types.BLOB);
             }
             
             int affectedRows = pstmt.executeUpdate();
@@ -80,7 +81,7 @@ public class EventsDAO {
     }
     
     public boolean updateEvent(Event event) throws SQLException {
-        String sql = "UPDATE events SET title = ?, location = ?, date = ?, time = ?, available_seats = ?, price = ?, image = ? WHERE id = ?";
+        String sql = "UPDATE events SET title = ?, location = ?, date = ?, time = ?, available_seats = ?, price = ?, category_id = ?, image = ? WHERE id = ?";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -91,21 +92,22 @@ public class EventsDAO {
             pstmt.setString(4, event.getTime());
             pstmt.setInt(5, event.getAvailableSeats());
             pstmt.setDouble(6, event.getPrice());
+            pstmt.setInt(7, event.getCategoryId());
             
             // Handle image data - check if we're updating the image
             if (event.getImageData() != null) {
-                pstmt.setBytes(7, event.getImageData());
+                pstmt.setBytes(8, event.getImageData());
             } else {
                 // Get the existing image data if we're not updating it
                 Event existingEvent = getEventById(event.getEventId());
                 if (existingEvent != null && existingEvent.getImageData() != null) {
-                    pstmt.setBytes(7, existingEvent.getImageData());
+                    pstmt.setBytes(8, existingEvent.getImageData());
                 } else {
-                    pstmt.setNull(7, java.sql.Types.BLOB);
+                    pstmt.setNull(8, java.sql.Types.BLOB);
                 }
             }
             
-            pstmt.setInt(8, event.getEventId());
+            pstmt.setInt(9, event.getEventId());
             
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -134,6 +136,7 @@ public class EventsDAO {
         event.setTime(rs.getString("time"));
         event.setAvailableSeats(rs.getInt("available_seats"));
         event.setPrice(rs.getDouble("price"));
+        event.setCategoryId(rs.getInt("category_id"));
         
         // Extract image data
         byte[] imageData = rs.getBytes("image");

@@ -24,7 +24,7 @@ public class EventService {
             return eventsDAO.getAllEvents();
         } catch (SQLException e) {
             e.printStackTrace();
-            return List.of(); // Return empty list on error
+            return List.of(); 
         }
     }
     
@@ -37,24 +37,44 @@ public class EventService {
         }
     }
     
-    // Handle entire event creation process from form data
+    
+    public boolean createEvent(Event event) {
+        try {
+            return eventsDAO.createEvent(event);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    
+    public boolean updateEvent(Event event) {
+        try {
+            return eventsDAO.updateEvent(event);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    
     public boolean processEventCreation(String title, String location, String dateStr, 
                                       String time, String seatsStr, String priceStr, Part filePart) {
         try {
-            // First validate the input data
+            
             if (!validateEventData(title, location, dateStr, time, seatsStr, priceStr)) {
                 return false;
             }
             
-            // Create event object
-            Event event = createEventFromFormData(title, location, dateStr, time, seatsStr, priceStr);
             
-            // Process image if provided
+            Event event = createEventFromFormData(title, location, dateStr, time, seatsStr, priceStr, null);
+            
+            
             if (filePart != null && filePart.getSize() > 0) {
                 handleEventImage(filePart, event);
             }
             
-            // Create event in database
+            
             return eventsDAO.createEvent(event);
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,30 +82,30 @@ public class EventService {
         }
     }
     
-    // Handle entire event update process
+    
     public boolean processEventUpdate(int eventId, String title, String location, String dateStr, 
                                     String time, String seatsStr, String priceStr, Part filePart) {
         try {
-            // Validate the input data
+            
             if (!validateEventData(title, location, dateStr, time, seatsStr, priceStr)) {
                 return false;
             }
             
-            // Get existing event
+            
             Event event = getEventById(eventId);
             if (event == null) {
                 return false;
             }
             
-            // Update event properties
-            updateEventFromFormData(event, title, location, dateStr, time, seatsStr, priceStr);
             
-            // Process image if provided
+            updateEventFromFormData(event, title, location, dateStr, time, seatsStr, priceStr, null);
+            
+            
             if (filePart != null && filePart.getSize() > 0) {
                 handleEventImage(filePart, event);
             }
             
-            // Update event in database
+            
             return eventsDAO.updateEvent(event);
         } catch (Exception e) {
             e.printStackTrace();
@@ -111,10 +131,10 @@ public class EventService {
         }
     }
     
-    // Validate event data
+    
     public boolean validateEventData(String title, String location, String dateStr, 
                                   String time, String seatsStr, String priceStr) {
-        // Check for null or empty values
+        
         if (title == null || title.trim().isEmpty() || 
             location == null || location.trim().isEmpty() || 
             dateStr == null || dateStr.trim().isEmpty() || 
@@ -125,7 +145,7 @@ public class EventService {
         }
         
         try {
-            // Validate numeric inputs
+            
             int seats = Integer.parseInt(seatsStr);
             double price = Double.parseDouble(priceStr);
             
@@ -133,11 +153,11 @@ public class EventService {
                 return false;
             }
             
-            // Validate date format and logic
+            
             Date eventDate = Date.valueOf(dateStr);
             Date today = Date.valueOf(LocalDate.now());
             
-            // Event date should not be in the past
+            
             if (eventDate.before(today)) {
                 return false;
             }
@@ -148,9 +168,9 @@ public class EventService {
         }
     }
     
-    // Create Event object from form data
+    
     private Event createEventFromFormData(String title, String location, String dateStr, 
-                                        String time, String seatsStr, String priceStr) {
+                                        String time, String seatsStr, String priceStr, String categoryIdStr) {
         Event event = new Event();
         event.setTitle(title);
         event.setLocation(location);
@@ -158,41 +178,44 @@ public class EventService {
         event.setTime(time);
         event.setAvailableSeats(Integer.parseInt(seatsStr));
         event.setPrice(Double.parseDouble(priceStr));
+        if (categoryIdStr != null && !categoryIdStr.isEmpty()) {
+            event.setCategoryId(Integer.parseInt(categoryIdStr));
+        }
         return event;
     }
     
-    // Update existing Event object with form data
+    
     private void updateEventFromFormData(Event event, String title, String location, 
-                                      String dateStr, String time, String seatsStr, String priceStr) {
+                                      String dateStr, String time, String seatsStr, String priceStr, String categoryIdStr) {
         event.setTitle(title);
         event.setLocation(location);
         event.setDate(Date.valueOf(dateStr));
         event.setTime(time);
         event.setAvailableSeats(Integer.parseInt(seatsStr));
         event.setPrice(Double.parseDouble(priceStr));
+        if (categoryIdStr != null && !categoryIdStr.isEmpty()) {
+            event.setCategoryId(Integer.parseInt(categoryIdStr));
+        }
     }
     
-    // Handle event image processing
-    private boolean handleEventImage(Part filePart, Event event) throws IOException {
+    
+    public boolean handleEventImage(Part filePart, Event event) throws IOException {
         if (filePart != null && filePart.getSize() > 0) {
             try {
-                // Read the file data
+                
                 byte[] imageData = readAllBytes(filePart.getInputStream());
                 
-                // Reduce size if necessary
-                if (imageData.length > 1024 * 1024) { // If larger than 1MB
-                    imageData = reduceImageSize(imageData, 1024 * 1024);
-                }
                 
-                // Set the image data in the event object
                 event.setImageData(imageData);
                 return true;
             } catch (Exception e) {
-                throw new IOException("Failed to process image data: " + e.getMessage(), e);
+                e.printStackTrace();
+                return false;
             }
         }
         return false;
     }
+    
     
     private byte[] readAllBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -207,20 +230,20 @@ public class EventService {
     }
     
     private byte[] reduceImageSize(byte[] originalData, int targetSize) {
-        // If data is already smaller than target, no need to reduce
+        
         if (originalData.length <= targetSize) {
             return originalData;
         }
         
-        // Simple approach - reduce by skipping bytes
+        
         double ratio = (double) targetSize / originalData.length;
         ByteArrayOutputStream result = new ByteArrayOutputStream(targetSize);
         
-        // Keep header bytes (important for image format)
+        
         int headerSize = Math.min(512, originalData.length / 10);
         result.write(originalData, 0, headerSize);
         
-        // Skip some bytes in the middle
+        
         int skipFactor = (int) Math.ceil(1.0 / ratio);
         for (int i = headerSize; i < originalData.length - headerSize; i += skipFactor) {
             if (result.size() < targetSize - headerSize) {
@@ -228,7 +251,7 @@ public class EventService {
             }
         }
         
-        // Keep footer bytes
+        
         if (originalData.length > headerSize * 2) {
             int remaining = targetSize - result.size();
             if (remaining > 0) {

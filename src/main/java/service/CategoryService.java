@@ -5,6 +5,7 @@ import model.Category;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryService {
@@ -19,20 +20,13 @@ public class CategoryService {
             return categoryDAO.getAllCategories();
         } catch (SQLException e) {
             e.printStackTrace();
-            return List.of(); // Return empty list on error
+            return List.of(); 
         }
     }
     
     public List<Category> getActiveCategories() {
-        try {
-            // Filter to only return active categories
-            return categoryDAO.getAllCategories().stream()
-                .filter(Category::isActive)
-                .toList();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return List.of();
-        }
+        
+        return new ArrayList<>();
     }
     
     public Category getCategoryById(int categoryId) {

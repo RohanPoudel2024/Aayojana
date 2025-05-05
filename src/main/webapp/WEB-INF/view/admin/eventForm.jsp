@@ -4,6 +4,8 @@
 <%@ page import="model.Category" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.text.DecimalFormat" %>
+<%@ page import="model.Category" %>
+<%@ page import="java.util.List" %>
 <%
     User currentUser = (User) session.getAttribute("currentUser");
     Event event = (Event) request.getAttribute("event");

@@ -15,13 +15,14 @@ import service.EventService;
 import service.CategoryService;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.util.List;
 
 @WebServlet("/admin/events")
 @MultipartConfig(
-    fileSizeThreshold = 1024 * 1024,     // 1MB
-    maxFileSize = 5 * 1024 * 1024,       // 5MB max file size
-    maxRequestSize = 10 * 1024 * 1024    // 10MB max request size
+    fileSizeThreshold = 1024 * 1024,     
+    maxFileSize = 5 * 1024 * 1024,       
+    maxRequestSize = 10 * 1024 * 1024    
 )
 public class AdminEventsServlet extends HttpServlet {
     private EventService eventService;
@@ -38,7 +39,7 @@ public class AdminEventsServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("currentUser");
         
-        // Check if user is logged in and is admin
+        
         if (currentUser == null || !"admin".equals(currentUser.getRole())) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -47,7 +48,7 @@ public class AdminEventsServlet extends HttpServlet {
         String action = request.getParameter("action");
         
         if (action == null) {
-            // Default action - list events
+            
             listEvents(request, response);
         } else {
             switch (action) {
@@ -74,7 +75,7 @@ public class AdminEventsServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("currentUser");
         
-        // Check if user is logged in and is admin
+        
         if (currentUser == null || !"admin".equals(currentUser.getRole())) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -103,7 +104,7 @@ public class AdminEventsServlet extends HttpServlet {
     private void listEvents(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // Get events from service
+        
         List<Event> events = eventService.getAllEvents();
         request.setAttribute("events", events);
         request.getRequestDispatcher("/WEB-INF/view/admin/events.jsp").forward(request, response);
@@ -126,7 +127,7 @@ public class AdminEventsServlet extends HttpServlet {
         Event event = eventService.getEventById(eventId);
         
         if (event == null) {
-            // Event not found, redirect to events list
+            
             response.sendRedirect(request.getContextPath() + "/admin/events");
             return;
         }
@@ -142,38 +143,63 @@ public class AdminEventsServlet extends HttpServlet {
     private void createEvent(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // Get form parameters
+        
         String title = request.getParameter("title");
         String location = request.getParameter("location");
         String dateStr = request.getParameter("date");
         String time = request.getParameter("time");
         String seatsStr = request.getParameter("availableSeats");
         String priceStr = request.getParameter("price");
+        String categoryIdStr = request.getParameter("categoryId");
         
-        // Get image file
+        
         Part filePart = request.getPart("eventImage");
         
-        // Process event creation via service
-        boolean success = eventService.processEventCreation(
-            title, location, dateStr, time, seatsStr, priceStr, filePart
-        );
+        
+        Event event = new Event();
+        event.setTitle(title);
+        event.setLocation(location);
+        event.setDate(Date.valueOf(dateStr));
+        event.setTime(time);
+        event.setAvailableSeats(Integer.parseInt(seatsStr));
+        event.setPrice(Double.parseDouble(priceStr));
+        if (categoryIdStr != null && !categoryIdStr.isEmpty()) {
+            event.setCategoryId(Integer.parseInt(categoryIdStr));
+        }
+        
+        
+        if (filePart != null && filePart.getSize() > 0) {
+            try {
+                boolean imageAdded = eventService.handleEventImage(filePart, event);
+                if (!imageAdded) {
+                    
+                    System.out.println("Warning: Image processing failed!");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                
+            }
+        }
+        
+        
+        boolean success = eventService.createEvent(event);
         
         if (success) {
-            // Set success message
+            
             request.getSession().setAttribute("successMessage", "Event created successfully.");
         } else {
-            // Set error message
+            
             request.getSession().setAttribute("errorMessage", "Failed to create event. Please check your input.");
         }
         
-        // Redirect to events list
+        
         response.sendRedirect(request.getContextPath() + "/admin/events");
     }
     
     private void updateEvent(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // Get form parameters
+        
         int eventId = Integer.parseInt(request.getParameter("id"));
         String title = request.getParameter("title");
         String location = request.getParameter("location");
@@ -181,14 +207,40 @@ public class AdminEventsServlet extends HttpServlet {
         String time = request.getParameter("time");
         String seatsStr = request.getParameter("availableSeats");
         String priceStr = request.getParameter("price");
+        String categoryIdStr = request.getParameter("categoryId");
         
-        // Get image file if uploaded
+        
         Part filePart = request.getPart("eventImage");
         
-        // Process event update via service
-        boolean success = eventService.processEventUpdate(
-            eventId, title, location, dateStr, time, seatsStr, priceStr, filePart
-        );
+        
+        Event event = new Event();
+        event.setEventId(eventId);
+        event.setTitle(title);
+        event.setLocation(location);
+        event.setDate(Date.valueOf(dateStr));
+        event.setTime(time);
+        event.setAvailableSeats(Integer.parseInt(seatsStr));
+        event.setPrice(Double.parseDouble(priceStr));
+        if (categoryIdStr != null && !categoryIdStr.isEmpty()) {
+            event.setCategoryId(Integer.parseInt(categoryIdStr));
+        }
+        
+        
+        if (filePart != null && filePart.getSize() > 0) {
+            try {
+                boolean imageAdded = eventService.handleEventImage(filePart, event);
+                if (!imageAdded) {
+                    
+                    System.out.println("Warning: Image processing failed!");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                
+            }
+        }
+        
+        
+        boolean success = eventService.updateEvent(event);
         
         if (success) {
             request.getSession().setAttribute("successMessage", "Event updated successfully.");

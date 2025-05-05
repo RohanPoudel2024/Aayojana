@@ -32,7 +32,7 @@ public class Event {
     
     // Getters and setters
     public int getEventId() {
-        return eventId;
+        return this.eventId;
     }
 
     public void setEventId(int eventId) {
