@@ -17,27 +17,32 @@
 <div class="container">
     <div class="sidebar">
         <div class="logo">AYO-JANA</div>
-        <a href="#" class="active"><span class="icon">📊</span>Dashboard</a>
-        <a href="#"><span class="icon">👥</span>Users</a>
+        <a href="${pageContext.request.contextPath}/Dashboard" class="active"><span class="icon">📊</span>Dashboard</a>
+        <a href="${pageContext.request.contextPath}/admin/users"><span class="icon">👥</span>Users</a>
         <a href="#"><span class="icon">🎉</span>Events</a>
         <a href="#"><span class="icon">📋</span>Reports</a>
         <a href="#"><span class="icon">⚙️</span>Settings</a>
         <div class="user-account">
             <a href="#"><span class="icon">👤</span>User Account</a>
-            <a href="#"><span class="icon">👓</span>View profile</a>
+            <a href="${pageContext.request.contextPath}/profile"><span class="icon">👓</span>View profile</a>
+            <form action="${pageContext.request.contextPath}/logout" method="post">
+                <button type="submit" style="background: none; border: none; color: #666; text-align: left; width: 100%; padding: 12px 0; cursor: pointer; display: flex; align-items: center;">
+                    <span class="icon" style="margin-right: 10px;">🚪</span>Logout
+                </button>
+            </form>
         </div>
     </div>
     <div class="main-content">
         <div class="header">
             <div class="nav-links">
                 <a href="#" class="active">Dashboard</a>
-                <a href="#">Users</a>
+                <a href="${pageContext.request.contextPath}/admin/users">Users</a>
                 <a href="#">Reports</a>
             </div>
             <div class="user">
-                <%User user = (User) session.getAttribute("currentUser");
-                if (user !=null){
-
+                <%
+                    User user = (User) session.getAttribute("currentUser");
+                    if (user != null) {
                 %>
                 <span><%=user.getName()%></span>
                 <span class="icon">🔔</span>
@@ -45,112 +50,87 @@
             </div>
             <%
                 } else {
-                    response.sendRedirect("login.jsp");
+                    response.sendRedirect(request.getContextPath() + "/login");
                 }
             %>
         </div>
-        <div class="stats-section">
-            <h2>Key Stats Overview</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>1,245</h3>
-                        <p>Total Users</p>
-                        <p class="change increase">+12.5%</p>
+        
+        <!-- Dashboard Overview -->
+        <div class="section">
+            <h2>Dashboard Overview</h2>
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-icon">👥</div>
+                    <div class="card-info">
+                        <h3>Users</h3>
+                        <p class="card-number">150</p>
                     </div>
-                    <div class="chart-placeholder"></div>
+                    <a href="${pageContext.request.contextPath}/admin/users" class="card-link">Manage Users</a>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>$45,670</h3>
-                        <p>Monthly Revenue</p>
-                        <p class="change decrease">-8.2%</p>
+                <div class="card">
+                    <div class="card-icon">🎉</div>
+                    <div class="card-info">
+                        <h3>Events</h3>
+                        <p class="card-number">45</p>
                     </div>
-                    <div class="chart-placeholder"></div>
+                    <a href="#" class="card-link">Manage Events</a>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-info">
-                        <h3>3,578</h3>
-                        <p>Active Sessions</p>
-                        <p class="change increase">+15.4%</p>
+                <div class="card">
+                    <div class="card-icon">🎟️</div>
+                    <div class="card-info">
+                        <h3>Bookings</h3>
+                        <p class="card-number">320</p>
                     </div>
-                    <div class="chart-placeholder"></div>
+                    <a href="#" class="card-link">View Bookings</a>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💰</div>
+                    <div class="card-info">
+                        <h3>Revenue</h3>
+                        <p class="card-number">₹125,000</p>
+                    </div>
+                    <a href="#" class="card-link">Financial Reports</a>
                 </div>
             </div>
         </div>
-        <div class="events-section">
-            <h2>Top Events of The Week</h2>
-            <div class="events-grid">
-                <div class="event-card">
-                    <div class="placeholder">Event 1</div>
-                    <p>Event 1</p>
+        
+        <!-- Recent Activity -->
+        <div class="section">
+            <h2>Recent Activity</h2>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon">👤</div>
+                    <div class="activity-details">
+                        <p class="activity-text">New user registered: <strong>Rahul Sharma</strong></p>
+                        <p class="activity-time">2 hours ago</p>
+                    </div>
                 </div>
-                <div class="event-card">
-                    <div class="placeholder">Event 2</div>
-                    <p>Event 2</p>
+                <div class="activity-item">
+                    <div class="activity-icon">🎉</div>
+                    <div class="activity-details">
+                        <p class="activity-text">New event created: <strong>Tech Conference 2023</strong></p>
+                        <p class="activity-time">5 hours ago</p>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🎟️</div>
+                    <div class="activity-details">
+                        <p class="activity-text">New booking: <strong>3 tickets</strong> for Music Festival</p>
+                        <p class="activity-time">Yesterday</p>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">⚙️</div>
+                    <div class="activity-details">
+                        <p class="activity-text">System update completed</p>
+                        <p class="activity-time">2 days ago</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="table-section">
-            <table>
-                <thead>
-                <tr>
-                    <th>Booking ID</th>
-                    <th>User</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>12345</td>
-                    <td>John Doe</td>
-                    <td>2025-10-01</td>
-                    <td class="status-confirmed">Confirmed</td>
-                    <td class="actions">
-                        <button class="edit">Edit</button>
-                        <button class="view">View</button>
-                        <button class="delete">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>23456</td>
-                    <td>Jane Smith</td>
-                    <td>2025-11-01</td>
-                    <td class="status-pending">Pending</td>
-                    <td class="actions">
-                        <button class="edit">Edit</button>
-                        <button class="view">View</button>
-                        <button class="delete">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>34567</td>
-                    <td>Alice Johnson</td>
-                    <td>2024-12-01</td>
-                    <td class="status-cancelled">Cancelled</td>
-                    <td class="actions">
-                        <button class="edit">Edit</button>
-                        <button class="view">View</button>
-                        <button class="delete">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>45678</td>
-                    <td>Robert Brown</td>
-                    <td>2025-01-01</td>
-                    <td class="status-confirmed">Confirmed</td>
-                    <td class="actions">
-                        <button class="edit">Edit</button>
-                        <button class="view">View</button>
-                        <button class="delete">Delete</button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 </div>
+
+
 </body>
 </html>
