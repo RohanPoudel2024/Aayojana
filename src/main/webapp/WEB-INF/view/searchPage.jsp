@@ -81,7 +81,7 @@
                         <div class="sold-out">Sold Out</div>
                         <div class="tag">New Event</div>
                         <h3>Gathering of Rock ICONS | Surprise Event</h3>
-                        <p><span class="icon">📅</span>Tuesday, June 20 | 08:00 PM</p>
+                        <p><span class="icon">📅</span>Wednesday, June 20 | 09:15 PM</p>
                         <p><span class="icon">📍</span>Kathmandu, Nepal</p>
                     </div>
                     <div class="event-item">
