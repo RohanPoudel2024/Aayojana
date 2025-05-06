@@ -29,7 +29,7 @@ public class AdminCategoryServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("currentUser");
         
-        // Check if user is logged in and is admin
+        
         if (currentUser == null || !"admin".equals(currentUser.getRole())) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -38,7 +38,7 @@ public class AdminCategoryServlet extends HttpServlet {
         String action = request.getParameter("action");
         
         if (action == null) {
-            // Default action - list categories
+            
             listCategories(request, response);
         } else {
             switch (action) {
@@ -68,7 +68,7 @@ public class AdminCategoryServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("currentUser");
         
-        // Check if user is logged in and is admin
+        
         if (currentUser == null || !"admin".equals(currentUser.getRole())) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -97,7 +97,7 @@ public class AdminCategoryServlet extends HttpServlet {
     private void listCategories(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // Get categories from service
+        
         List<Category> categories = categoryService.getAllCategories();
         request.setAttribute("categories", categories);
         request.getRequestDispatcher("/WEB-INF/view/admin/categories.jsp").forward(request, response);
@@ -116,7 +116,7 @@ public class AdminCategoryServlet extends HttpServlet {
         Category category = categoryService.getCategoryById(categoryId);
         
         if (category == null) {
-            // Category not found, redirect to categories list
+            
             response.sendRedirect(request.getContextPath() + "/admin/categories");
             return;
         }
@@ -128,12 +128,12 @@ public class AdminCategoryServlet extends HttpServlet {
     private void createCategory(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // Get form parameters
+        
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         boolean isActive = "on".equals(request.getParameter("isActive")) || "true".equals(request.getParameter("isActive"));
         
-        // Create category via service
+        
         boolean success = categoryService.createCategory(name, description, isActive);
         
         if (success) {
@@ -148,13 +148,13 @@ public class AdminCategoryServlet extends HttpServlet {
     private void updateCategory(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
-        // Get form parameters
+        
         int categoryId = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         boolean isActive = "on".equals(request.getParameter("isActive")) || "true".equals(request.getParameter("isActive"));
         
-        // Update category via service
+        
         boolean success = categoryService.updateCategory(categoryId, name, description, isActive);
         
         if (success) {
