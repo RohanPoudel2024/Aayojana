@@ -48,21 +48,19 @@ public class EventDetailsServlet extends HttpServlet {
             Category category = categoryService.getCategoryById(event.getCategoryId());
             
             // Get similar events (same category, exclude current)
-            List<Event> similarEvents = eventService.getAllEvents().stream()
-                    .filter(e -> e.getCategoryId() == event.getCategoryId() && e.getEventId() != event.getEventId())
-                    .limit(3)
-                    .toList();
+            List<Event> similarEvents = eventService.getEventsByCategory(event.getCategoryId(), 3, event.getEventId());
             
             // Set attributes
             request.setAttribute("event", event);
             request.setAttribute("category", category);
             request.setAttribute("similarEvents", similarEvents);
             
-            // Forward to event details page
+            // Forward to event details page - ensure correct path
             request.getRequestDispatcher("/WEB-INF/view/eventDetails.jsp").forward(request, response);
             
-        } catch (NumberFormatException e) {
-            // Invalid event ID format, redirect to event list
+        } catch (Exception e) {
+            e.printStackTrace();
+            // If any error, redirect to event list
             response.sendRedirect(request.getContextPath() + "/EventsServlet");
         }
     }

@@ -233,7 +233,7 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="price">Price (₹)<span class="required">*</span></label>
+                            <label for="price">Price (NPR. )<span class="required">*</span></label>
                             <input type="number" id="price" name="price" value="<%= price %>" min="0" step="0.01" required>
                         </div>
                     </div>

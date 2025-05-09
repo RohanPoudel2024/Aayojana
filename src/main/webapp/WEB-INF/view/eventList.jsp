@@ -231,7 +231,7 @@
                                 <p class="event-info"><span class="icon"><i class="fas fa-map-marker-alt"></i></span> <%= event.getLocation() %></p>
                                 <p class="event-price <%= event.getPrice() <= 0 ? "free" : "" %>">
                                     <% if(event.getPrice() > 0) { %>
-                                        From $<%= priceFormat.format(event.getPrice()) %>
+                                        From NPR. <%= priceFormat.format(event.getPrice()) %>
                                         <span class="event-tag">Paid</span>
                                     <% } else { %>
                                         Free entry
@@ -278,7 +278,7 @@
                                 <p class="event-info"><span class="icon"><i class="fas fa-map-marker-alt"></i></span> <%= event.getLocation() %></p>
                                 <p class="event-price <%= event.getPrice() <= 0 ? "free" : "" %>">
                                     <% if(event.getPrice() > 0) { %>
-                                        From $<%= priceFormat.format(event.getPrice()) %>
+                                        From NPR. <%= priceFormat.format(event.getPrice()) %>
                                         <span class="event-tag">Paid</span>
                                     <% } else { %>
                                         Free entry
@@ -369,7 +369,7 @@
                                 <p class="event-info"><span class="icon"><i class="fas fa-map-marker-alt"></i></span> <%= event.getLocation() %></p>
                                 <p class="event-price <%= event.getPrice() <= 0 ? "free" : "" %>">
                                     <% if(event.getPrice() > 0) { %>
-                                        From $<%= priceFormat.format(event.getPrice()) %>
+                                        From NPR. <%= priceFormat.format(event.getPrice()) %>
                                         <span class="event-tag">Paid</span>
                                     <% } else { %>
                                         Free entry
@@ -415,7 +415,7 @@
                         <p class="event-info"><span class="icon"><i class="fas fa-map-marker-alt"></i></span> <%= highlightEvent.getLocation() %></p>
                         <div class="event-price <%= highlightEvent.getPrice() <= 0 ? "free" : "" %>">
                             <% if(highlightEvent.getPrice() > 0) { %>
-                                From $<%= priceFormat.format(highlightEvent.getPrice()) %>
+                                From NPR. <%= priceFormat.format(highlightEvent.getPrice()) %>
                             <% } else { %>
                                 Free entry
                             <% } %>

@@ -777,7 +777,7 @@
                     <p>Join us for an amazing experience with industry experts and networking opportunities.</p>
                     <div class="event-meta">
                         <span><i class="fas fa-map-marker-alt"></i> <%= eventLocations[i] %></span>
-                        <span><i class="fas fa-ticket-alt"></i> From ₹1,999</span>
+                        <span><i class="fas fa-ticket-alt"></i> From NPR. 1,999</span>
                     </div>
                 </div>
             </div>
