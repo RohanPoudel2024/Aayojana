@@ -10,10 +10,12 @@ import java.io.InputStream;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EventService {
     private EventsDAO eventsDAO;
+    
     
     public EventService() {
         this.eventsDAO = new EventsDAO();
@@ -260,5 +262,37 @@ public class EventService {
         }
         
         return result.toByteArray();
+    }
+        public List<Event> getEventsByCategory(int categoryId, int limit, int excludeEventId) {
+        try {
+            // Get all events
+            List<Event> allEvents = getAllEvents();
+            
+            // Create a list for filtered events
+            List<Event> similarEvents = new ArrayList<>();
+            int count = 0;
+            
+            // Go through all events and filter
+            for (Event event : allEvents) {
+                // Only include events that:
+                // 1. Are in the same category
+                // 2. Are not the current event
+                if (event.getCategoryId() == categoryId && event.getEventId() != excludeEventId) {
+                    similarEvents.add(event);
+                    count++;
+                    
+                    // Stop when we reach the limit
+                    if (count >= limit) {
+                        break;
+                    }
+                }
+            }
+            
+            return similarEvents;
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Return empty list if there's an error
+            return List.of();
+        }
     }
 }

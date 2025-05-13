@@ -231,7 +231,7 @@
                                 <td class="seats <%= event.getAvailableSeats() < 10 ? "low-seats" : "" %>">
                                     <%= event.getAvailableSeats() %>
                                 </td>
-                                <td class="price">₹ <%= priceFormat.format(event.getPrice()) %></td>
+                                <td class="price">NPR. <%= priceFormat.format(event.getPrice()) %></td>
                                 <td>
                                     <% if (event.hasImage()) { %>
                                         <img src="${pageContext.request.contextPath}/eventImage?eventId=<%= event.getEventId() %>" 
