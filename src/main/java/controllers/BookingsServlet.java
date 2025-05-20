@@ -16,9 +16,11 @@ import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Logger;
 
-@WebServlet("/booking/*")
+@WebServlet("/booking")
 public class BookingsServlet extends HttpServlet {
+    private static final Logger logger = Logger.getLogger(BookingsServlet.class.getName());
     private BookingService bookingService;
     private EventService eventService;
     
@@ -30,6 +32,7 @@ public class BookingsServlet extends HttpServlet {
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.info("BookingsServlet doGet called with URI: " + request.getRequestURI() + " and QueryString: " + request.getQueryString());
         String action = request.getParameter("action");
         
         // Check if user is logged in
@@ -54,22 +57,88 @@ public class BookingsServlet extends HttpServlet {
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Check if user is logged in
+        // Get current user from session
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute("currentUser");
-        if (currentUser == null) {
-            response.sendRedirect(request.getContextPath() + "/login?redirect=" + request.getRequestURI());
+        
+        if (currentUser == null || currentUser.getUserId() <= 0) {
+            logger.severe("Invalid user in session. User: " + (currentUser == null ? "null" : "ID=" + currentUser.getUserId()));
+            session.invalidate(); // Clear invalid session
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        String eventIdStr = request.getParameter("eventId");
+        String seatsStr = request.getParameter("seats");
+        
+        // Log all request parameters for debugging
+        logger.info("Request parameters: eventId=" + eventIdStr + ", seats=" + seatsStr);
+        
+        if (eventIdStr == null || seatsStr == null) {
+            logger.severe("Missing required parameters: eventId or seats");
+            response.sendRedirect(request.getContextPath() + "/EventsServlet");
             return;
         }
         
-        String action = request.getParameter("action");
-        
-        if (action == null || action.equals("create")) {
-            // Process booking creation
-            createBooking(request, response, currentUser.getUserId());
-        } else if (action.equals("cancel")) {
-            // Process booking cancellation
-            cancelBooking(request, response, currentUser.getUserId());
+        try {
+            int eventId = Integer.parseInt(eventIdStr);
+            int seats = Integer.parseInt(seatsStr);
+            
+            // Print detailed user information for debugging
+            logger.info("User info from session - ID: " + currentUser.getUserId() + 
+                       ", Name: " + currentUser.getName() + 
+                       ", Email: " + currentUser.getEmail());
+            
+            // Create booking object
+            Booking booking = new Booking();
+            booking.setUserId(currentUser.getUserId());
+            booking.setEventId(eventId);
+            booking.setBookingDate(Date.valueOf(LocalDate.now()));
+            booking.setSeatsBooked(seats);
+            
+            Event event = eventService.getEventById(eventId);
+            if (event == null) {
+                logger.severe("Event not found with ID: " + eventId);
+                request.setAttribute("errorMessage", "Event not found.");
+                request.getRequestDispatcher("/WEB-INF/view/bookings/form.jsp").forward(request, response);
+                return;
+            }
+
+            // Log event details
+            logger.info("Event details - Title: " + event.getTitle() + 
+                       ", Available seats: " + event.getAvailableSeats() + 
+                       ", Price: " + event.getPrice());
+            
+            booking.setTotalPrice(event.getPrice() * seats);
+            
+            // Process booking
+            logger.info("Attempting to create booking: EventID=" + eventId + 
+                       ", UserID=" + currentUser.getUserId() + 
+                       ", Seats=" + seats + 
+                       ", Total Price=" + booking.getTotalPrice());
+                       
+            int bookingId = bookingService.createBooking(booking);
+            
+            if (bookingId > 0) {
+                // Booking successful
+                logger.info("Booking successful with ID: " + bookingId);
+                session.setAttribute("message", "Booking successful! Your booking ID is " + bookingId);
+                response.sendRedirect(request.getContextPath() + "/booking?action=list");
+            } else {
+                // Booking failed
+                logger.severe("Booking creation failed with bookingId: " + bookingId);
+                request.setAttribute("errorMessage", "Booking failed. Please ensure sufficient seats are available and try again.");
+                request.setAttribute("event", event);
+                request.getRequestDispatcher("/WEB-INF/view/bookings/form.jsp").forward(request, response);
+            }
+        } catch (NumberFormatException e) {
+            logger.severe("Invalid number format in parameters: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/EventsServlet");
+        } catch (Exception e) {
+            logger.severe("Unexpected error during booking: " + e.getMessage());
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
+            request.getRequestDispatcher("/WEB-INF/view/bookings/form.jsp").forward(request, response);
         }
     }
     
@@ -136,10 +205,15 @@ public class BookingsServlet extends HttpServlet {
     }
     
     private void createBooking(HttpServletRequest request, HttpServletResponse response, int userId) throws ServletException, IOException {
+        logger.info("Creating booking with user ID: " + userId);
         String eventIdStr = request.getParameter("eventId");
         String seatsStr = request.getParameter("seats");
         
+        // Enhanced debug logging
+        logger.info("POST Parameters: eventId=" + eventIdStr + ", seats=" + seatsStr);
+        
         if (eventIdStr == null || seatsStr == null) {
+            logger.severe("Missing required parameters: eventId or seats");
             response.sendRedirect(request.getContextPath() + "/EventsServlet");
             return;
         }
@@ -148,38 +222,69 @@ public class BookingsServlet extends HttpServlet {
             int eventId = Integer.parseInt(eventIdStr);
             int seats = Integer.parseInt(seatsStr);
             
+            // Verify user ID in session
+            HttpSession session = request.getSession();
+            User currentUser = (User) session.getAttribute("currentUser");
+            
+            if (currentUser == null || currentUser.getUserId() <= 0) {
+                // Handle case where user is not logged in properly
+                session.setAttribute("errorMessage", "Please log in again to complete your booking.");
+                response.sendRedirect(request.getContextPath() + "/login");
+                return;
+            }
+            
+            // Print detailed user information for debugging
+            logger.info("User info from session - ID: " + currentUser.getUserId() + ", Name: " + currentUser.getName() + ", Email: " + currentUser.getEmail());
+            
             // Create booking object
             Booking booking = new Booking();
-            booking.setUserId(userId);
+            booking.setUserId(currentUser.getUserId());
             booking.setEventId(eventId);
             booking.setBookingDate(Date.valueOf(LocalDate.now()));
             booking.setSeatsBooked(seats);
             
             Event event = eventService.getEventById(eventId);
             if (event == null) {
-                response.sendRedirect(request.getContextPath() + "/EventsServlet");
+                request.setAttribute("errorMessage", "Event not found.");
+                request.getRequestDispatcher("/WEB-INF/view/bookings/form.jsp").forward(request, response);
                 return;
             }
             
             booking.setTotalPrice(event.getPrice() * seats);
             
             // Process booking
+            logger.info("Attempting to create booking: EventID=" + eventId + ", UserID=" + currentUser.getUserId() + ", Seats=" + seats);
             int bookingId = bookingService.createBooking(booking);
             
             if (bookingId > 0) {
                 // Booking successful
-                request.setAttribute("message", "Booking successful! Your booking ID is " + bookingId);
-                response.sendRedirect(request.getContextPath() + 
-                    "/booking?action=list&message=Booking successful! Your booking ID is " + bookingId);
+                session.setAttribute("message", "Booking successful! Your booking ID is " + bookingId);
+                response.sendRedirect(request.getContextPath() + "/booking?action=list");
             } else {
-                // Booking failed
-                request.setAttribute("errorMessage", "Booking failed. Please try again.");
+                // Booking failed - show error on the form instead of redirecting
+                request.setAttribute("errorMessage", "Booking failed. Please ensure you are logged in and try again.");
                 request.setAttribute("event", event);
                 request.getRequestDispatcher("/WEB-INF/view/bookings/form.jsp").forward(request, response);
             }
         } catch (Exception e) {
+            logger.severe("Error processing booking: " + e.getMessage());
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/EventsServlet");
+            
+            // IMPORTANT: Don't redirect to EventsServlet; show an error to the user instead
+            HttpSession session = request.getSession();
+            Event event = null;
+            try {
+                int eventId = Integer.parseInt(eventIdStr);
+                event = eventService.getEventById(eventId);
+            } catch (Exception ex) {
+                // Ignore if we can't get the event at this point
+            }
+            
+            request.setAttribute("errorMessage", "Error creating booking: " + e.getMessage());
+            request.setAttribute("event", event);
+            
+            // Forward back to the form instead of redirecting
+            request.getRequestDispatcher("/WEB-INF/view/bookings/form.jsp").forward(request, response);
         }
     }
     
@@ -218,8 +323,29 @@ public class BookingsServlet extends HttpServlet {
     }
     
     private void listUserBookings(HttpServletRequest request, HttpServletResponse response, int userId) throws ServletException, IOException {
-        List<Booking> bookings = bookingService.getBookingsByUserId(userId);
-        request.setAttribute("bookings", bookings);
-        request.getRequestDispatcher("/WEB-INF/view/bookings/list.jsp").forward(request, response);
+        // Double-check that we have a valid user ID
+        if (userId <= 0) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        
+        try {
+            List<Booking> bookings = bookingService.getBookingsByUserId(userId);
+            request.setAttribute("bookings", bookings);
+            
+            // Pass any message from the session to the request
+            HttpSession session = request.getSession();
+            String message = (String) session.getAttribute("message");
+            if (message != null) {
+                request.setAttribute("message", message);
+                // Don't remove it here - we'll remove it in the JSP after displaying
+            }
+            
+            request.getRequestDispatcher("/WEB-INF/view/bookings/list.jsp").forward(request, response);
+        } catch (Exception e) {
+            logger.severe("Error loading bookings: " + e.getMessage());
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/EventsServlet");
+        }
     }
 }

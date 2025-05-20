@@ -13,10 +13,9 @@
 %>
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
+<head>    <meta charset="UTF-8">
     <title><%= isNewCategory ? "Create New Category" : "Edit Category" %> - AayoJana</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/dashboard.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminDashboard.css">
     <style>
         .content-area {
             padding: 20px;

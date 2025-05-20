@@ -142,7 +142,7 @@
         <div class="nav-links">
             <a href="${pageContext.request.contextPath}/EventsServlet">Explore</a>
             <a href="#">Upcoming Events</a>
-            <a href="${pageContext.request.contextPath}/bookings" class="active">My Bookings</a>
+            <a href="${pageContext.request.contextPath}/booking?action=list" class="active">My Bookings</a>
         </div>
         <% if (currentUser != null) { %>
             <div class="user-actions">
@@ -200,11 +200,11 @@
                     <% if (event.getPrice() > 0) { %>
                         <div class="summary-row">
                             <span class="label">Price per Seat</span>
-                            <span class="value">$<%= priceFormat.format(event.getPrice()) %></span>
+                            <span class="value">NPR <%= priceFormat.format(event.getPrice()) %></span>
                         </div>
                         <div class="summary-row total">
                             <span class="label">Total Price</span>
-                            <span class="value">$<%= priceFormat.format(totalPrice) %></span>
+                            <span class="value">NPR <%= priceFormat.format(totalPrice) %></span>
                         </div>
                     <% } else { %>
                         <div class="summary-row total">
@@ -213,17 +213,17 @@
                         </div>
                     <% } %>
                 </div>
-                
-                <div class="confirm-notice">
+                  <div class="confirm-notice">
                     <p><i class="fas fa-info-circle"></i> By confirming this booking, you agree to our terms and conditions.</p>
                 </div>
                 
-                <form action="${pageContext.request.contextPath}/bookings" method="post">
+                <form action="${pageContext.request.contextPath}/booking" method="post">
+                    <input type="hidden" name="action" value="create">
                     <input type="hidden" name="eventId" value="<%= event.getEventId() %>">
                     <input type="hidden" name="seats" value="<%= seats %>">
                     
                     <div class="form-actions">
-                        <a href="${pageContext.request.contextPath}/bookings/new?eventId=<%= event.getEventId() %>" class="btn btn-outline">Back</a>
+                        <a href="${pageContext.request.contextPath}/booking?eventId=<%= event.getEventId() %>" class="btn btn-outline">Back</a>
                         <button type="submit" class="btn btn-primary">Confirm Booking</button>
                     </div>
                 </form>

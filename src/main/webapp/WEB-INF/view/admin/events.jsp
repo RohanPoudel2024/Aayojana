@@ -26,50 +26,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Event Management - AayoJana</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/dashboard.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminDashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .content-area {
-            padding: 20px;
-        }
-        
-        .page-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
         .btn-add {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
             background-color: #4a00e0;
             color: white;
-            padding: 10px 16px;
             border-radius: 5px;
             text-decoration: none;
             font-weight: 500;
-            display: inline-flex;
-            align-items: center;
         }
         
         .btn-add:hover {
             background-color: #3c00b3;
-        }
-        
-        .message {
-            padding: 10px 15px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-        }
-        
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .error-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
         }
         
         table {
@@ -153,109 +125,76 @@
 </head>
 <body>
 <div class="container">
-    <div class="sidebar">
-        <div class="logo">AYO-JANA</div>
-        <a href="${pageContext.request.contextPath}/Dashboard"><span class="icon">📊</span>Dashboard</a>
-        <a href="${pageContext.request.contextPath}/admin/users"><span class="icon">👥</span>Users</a>
-        <a href="${pageContext.request.contextPath}/admin/events" class="active"><span class="icon">🎉</span>Events</a>
-        <a href="#"><span class="icon">📋</span>Bookings</a>
-        <a href="#"><span class="icon">⚙️</span>Settings</a>
-        <div class="user-account">
-            <a href="${pageContext.request.contextPath}/profile"><span class="icon">👤</span>User Account</a>
-            <form action="${pageContext.request.contextPath}/logout" method="post">
-                <button type="submit" style="background: none; border: none; color: #666; text-align: left; width: 100%; padding: 12px 0; cursor: pointer; display: flex; align-items: center;">
-                    <span class="icon" style="margin-right: 10px;">🚪</span>Logout
-                </button>
-            </form>
-        </div>
-    </div>
+    <!-- Include Admin Header -->
+    <jsp:include page="../common/adminHeader.jsp" />
     
-    <div class="main-content">
-        <div class="header">
-            <div class="nav-links">
-                <a href="${pageContext.request.contextPath}/Dashboard">Dashboard</a>
-                <a href="${pageContext.request.contextPath}/admin/users">Users</a>
-                <a href="${pageContext.request.contextPath}/admin/events" class="active">Events</a>
-            </div>
-            <div class="user">
-                <% if (currentUser != null) { %>
-                <span><%= currentUser.getName() %></span>
-                <span class="icon">👤</span>
-                <% } %>
-            </div>
+    <div class="content-area">
+        <div class="page-title">
+            <h1>Event Management</h1>
+            <a href="${pageContext.request.contextPath}/admin/events?action=new" class="btn-add">
+                <span style="margin-right: 5px;">+</span> Add New Event
+            </a>
         </div>
         
-        <div class="content-area">
-            <div class="page-title">
-                <h1>Event Management</h1>
-                <a href="${pageContext.request.contextPath}/admin/events?action=new" class="btn-add">
-                    <span style="margin-right: 5px;">+</span> Add New Event
-                </a>
+        <% if (successMessage != null && !successMessage.isEmpty()) { %>
+            <div class="message success-message">
+                <%= successMessage %>
             </div>
-            
-            <% if (successMessage != null && !successMessage.isEmpty()) { %>
-                <div class="message success-message">
-                    <%= successMessage %>
-                </div>
-            <% } %>
-            
-            <% if (errorMessage != null && !errorMessage.isEmpty()) { %>
-                <div class="message error-message">
-                    <%= errorMessage %>
-                </div>
-            <% } %>
-            
-            <table>
-                <thead>
+        <% } %>
+        
+        <% if (errorMessage != null && !errorMessage.isEmpty()) { %>
+            <div class="message error-message">
+                <%= errorMessage %>
+            </div>
+        <% } %>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Available Seats</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (events != null && !events.isEmpty()) {
+                    for (Event event : events) { %>
                     <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Location</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Available Seats</th>
-                        <th>Price</th>
-                        <th>Image</th>
-                        <th>Actions</th>
+                        <td>#<%= event.getEventId() %></td>
+                        <td><%= event.getTitle() %></td>
+                        <td><%= event.getLocation() %></td>
+                        <td><%= dateFormat.format(event.getDate()) %></td>
+                        <td><%= event.getTime() %></td>
+                        <td class="seats <%= event.getAvailableSeats() <= 10 ? "low-seats" : "" %>">
+                            <%= event.getAvailableSeats() %>
+                        </td>
+                        <td class="price">NPR. <%= priceFormat.format(event.getPrice()) %></td>
+                        <td>
+                            <div class="event-actions">
+                                <a href="${pageContext.request.contextPath}/admin/events?action=edit&id=<%= event.getEventId() %>" 
+                                   class="btn-action btn-edit">Edit</a>
+                                <form action="${pageContext.request.contextPath}/admin/events" method="post" 
+                                      onsubmit="return confirm('Are you sure you want to delete this event?');" style="display: inline;">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<%= event.getEventId() %>">
+                                    <button type="submit" class="btn-action btn-delete">Delete</button>
+                                </form>
+                            </div>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    <% if (events != null && !events.isEmpty()) { %>
-                        <% for (Event event : events) { %>
-                            <tr>
-                                <td><%= event.getEventId() %></td>
-                                <td><%= event.getTitle() %></td>
-                                <td><%= event.getLocation() %></td>
-                                <td><%= event.getDate() != null ? dateFormat.format(event.getDate()) : "-" %></td>
-                                <td><%= event.getTime() != null ? event.getTime() : "-" %></td>
-                                <td class="seats <%= event.getAvailableSeats() < 10 ? "low-seats" : "" %>">
-                                    <%= event.getAvailableSeats() %>
-                                </td>
-                                <td class="price">NPR. <%= priceFormat.format(event.getPrice()) %></td>
-                                <td>
-                                    <% if (event.hasImage()) { %>
-                                        <img src="${pageContext.request.contextPath}/eventImage?eventId=<%= event.getEventId() %>" 
-                                             alt="<%= event.getTitle() %>" class="event-image">
-                                    <% } else { %>
-                                        <div class="image-placeholder">No Image Available</div>
-                                    <% } %>
-                                </td>
-                                <td class="event-actions">
-                                    <a href="${pageContext.request.contextPath}/admin/events?action=edit&id=<%= event.getEventId() %>" class="btn-action btn-edit">Edit</a>
-                                    <a href="${pageContext.request.contextPath}/admin/events?action=delete&id=<%= event.getEventId() %>" 
-                                       onclick="return confirm('Are you sure you want to delete this event?')" 
-                                       class="btn-action btn-delete">Delete</a>
-                                </td>
-                            </tr>
-                        <% } %>
-                    <% } else { %>
-                        <tr>
-                            <td colspan="9" style="text-align: center; padding: 30px;">No events found</td>
-                        </tr>
-                    <% } %>
-                </tbody>
-            </table>
-        </div>
+                <% }
+                } else { %>
+                    <tr>
+                        <td colspan="8" style="text-align: center;">No events found</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
     </div>
 </div>
 </body>

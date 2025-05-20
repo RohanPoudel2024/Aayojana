@@ -8,8 +8,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.logging.Logger;
 
 public class UserActivityDAO {
+
+    private static final Logger logger = Logger.getLogger(UserActivityDAO.class.getName());
     
     public boolean updateProfile(User user) {
         String sql = "UPDATE users SET name = ?, email = ?, phone = ?, photo = ? WHERE id = ?";
@@ -124,5 +128,24 @@ public class UserActivityDAO {
         }
         
         return null;
+    }
+
+    public void logActivity(int userId, String action) throws SQLException {
+        String sql = "INSERT INTO user_activity (user_id, action, timestamp) VALUES (?, ?, ?)";
+        
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, userId);
+            stmt.setString(2, action);
+            stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+            
+            stmt.executeUpdate();
+            logger.info("Logged activity for user " + userId + ": " + action);
+            
+        } catch (SQLException e) {
+            logger.severe("Error logging user activity: " + e.getMessage());
+            throw e;
+        }
     }
 }

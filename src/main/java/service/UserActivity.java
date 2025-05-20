@@ -52,4 +52,12 @@ public class UserActivity {
         }
         return false;
     }
+    
+    public void logActivity(int userId, String action) {
+        try {
+            userActivityDAO.logActivity(userId, action);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

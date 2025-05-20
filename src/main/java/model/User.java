@@ -8,6 +8,7 @@ public class User {
     private String role;
     private String phone;
     private byte[] imageData;
+    private boolean active = true; // Default to active
 
     public User(int id, String name, String email, String phone, byte[] imageData, String password) {
         this.userId = id;
@@ -76,6 +77,14 @@ public class User {
 
     public void setImageData(byte[] imageData) {
         this.imageData = imageData;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public boolean hasProfileImage() {

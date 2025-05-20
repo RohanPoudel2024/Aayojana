@@ -25,7 +25,6 @@ public class EventsDAO {
         
         return events;
     }
-    
     public Event getEventById(int eventId) throws SQLException {
         String sql = "SELECT * FROM events WHERE id = ?";
         
@@ -79,8 +78,7 @@ public class EventsDAO {
         
         return false;
     }
-    
-    public boolean updateEvent(Event event) throws SQLException {
+      public boolean updateEvent(Event event) throws SQLException {
         String sql = "UPDATE events SET title = ?, location = ?, date = ?, time = ?, available_seats = ?, price = ?, category_id = ?, image = ? WHERE id = ?";
         
         try (Connection conn = DBUtils.getConnection();
@@ -113,8 +111,7 @@ public class EventsDAO {
             return affectedRows > 0;
         }
     }
-    
-    public boolean deleteEvent(int eventId) throws SQLException {
+      public boolean deleteEvent(int eventId) throws SQLException {
         String sql = "DELETE FROM events WHERE id = ?";
         
         try (Connection conn = DBUtils.getConnection();
@@ -126,10 +123,9 @@ public class EventsDAO {
             return affectedRows > 0;
         }
     }
-    
     private Event extractEventFromResultSet(ResultSet rs) throws SQLException {
         Event event = new Event();
-        event.setEventId(rs.getInt("id"));
+        event.setEventId(rs.getInt("id")); // Changed from event_id to id
         event.setTitle(rs.getString("title"));
         event.setLocation(rs.getString("location"));
         event.setDate(rs.getDate("date"));

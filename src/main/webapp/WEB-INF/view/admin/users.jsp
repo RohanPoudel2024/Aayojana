@@ -9,30 +9,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>User Management - AayoJana</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/dashboard.css">
-    <style>
-        .content-area {
-            padding: 20px;
-        }
-        
-        .page-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .btn-add {
-            background-color: #4a00e0;
-            color: white;
-            padding: 10px 16px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-        }
+    <title>User Management - AayoJana</title>    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminDashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         
         .btn-add:hover {
             background-color: #3c00b3;

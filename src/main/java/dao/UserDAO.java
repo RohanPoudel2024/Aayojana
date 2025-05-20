@@ -9,8 +9,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class UserDAO {
+    private static final Logger logger = Logger.getLogger(UserDAO.class.getName());
+
     public boolean createUser(User user) throws SQLException {
         String query = "INSERT INTO users (name, email, password, role) VALUES (?,?,?,?)";
 
@@ -42,26 +45,32 @@ public class UserDAO {
 
 
     public User validateUser(String email) throws SQLException {
-        String query = "SELECT * FROM users WHERE email =?";
+        String query = "SELECT * FROM users WHERE email = ?";
         try(Connection conn = DBUtils.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query)){
-            stmt.setString(1,email);
-
-            ResultSet rs = stmt.executeQuery();
-            if(rs.next()){
+            PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
                     User user = new User();
+                    user.setUserId(rs.getInt("id")); // Make sure this matches your column name
                     user.setName(rs.getString("name"));
                     user.setEmail(rs.getString("email"));
                     user.setPassword(rs.getString("password"));
                     user.setRole(rs.getString("role"));
-
+                    
+                    logger.info("Found user with ID: " + user.getUserId() + " for email: " + email);
                     return user;
+                }
             }
-        }catch (SQLException e){
-            System.out.println("Error during authUser: " + e.getMessage());
+            logger.warning("No user found for email: " + email);
+            return null;
+        } catch (SQLException e) {
+            logger.severe("Database error validating user: " + e.getMessage());
+            throw e;
         }
-        return null;
     }
+
     public boolean emailExists(String email) throws SQLException {
         String query = "SELECT email FROM users WHERE email = ?";
         try (Connection conn = DBUtils.getConnection();
@@ -134,17 +143,15 @@ public class UserDAO {
             System.out.println("Error deleting user: " + e.getMessage());
             throw e;
         }
-    }
-
-    public User getUserById(int userId) throws SQLException {
-        String query = "SELECT * FROM users WHERE id = ?";
+    }    public User getUserById(int userId) throws SQLException {
+        String sql = "SELECT * FROM users WHERE id = ?";
         
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             
-            stmt.setInt(1, userId);
+            pstmt.setInt(1, userId);
             
-            try (ResultSet rs = stmt.executeQuery()) {
+            try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     User user = new User();
                     user.setUserId(rs.getInt("id"));
@@ -153,12 +160,11 @@ public class UserDAO {
                     user.setPassword(rs.getString("password"));
                     user.setRole(rs.getString("role"));
                     user.setPhone(rs.getString("phone"));
-                    
                     return user;
                 }
             }
         }
-        
         return null;
+
     }
 }

@@ -12,35 +12,40 @@ import service.AuthService;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    private static final Logger logger = Logger.getLogger(LoginServlet.class.getName());
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        User user = new User();
-
+        
+        logger.info("Login attempt for email: " + email);
+        
         try {
-            user = AuthService.validateLogin(email, password);
-            if (user != null) {
+            User user = AuthService.validateLogin(email, password);
+            if (user != null && user.getUserId() > 0) {
                 HttpSession session = request.getSession();
                 session.setAttribute("currentUser", user);
-
+                logger.info("User logged in successfully. UserID: " + user.getUserId() + ", Name: " + user.getName());
+                
+                // Redirect based on role
                 if ("admin".equals(user.getRole())) {
-                    response.sendRedirect("Dashboard");
+                    response.sendRedirect(request.getContextPath() + "/admin/dashboard");
                 } else {
-                    response.sendRedirect("EventsServlet");
+                    response.sendRedirect(request.getContextPath() + "/EventsServlet");
                 }
             } else {
-                request.setAttribute("error","Please Enter Correct Password");
-                request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request,response);
+                logger.warning("Login failed for email: " + email + " (user null or invalid ID)");
+                request.setAttribute("errorMessage", "Invalid email or password");
+                request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);
             }
-        } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
-
-
-        } catch (ServletException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            logger.severe("Database error during login: " + e.getMessage());
+            request.setAttribute("errorMessage", "An error occurred. Please try again.");
+            request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);
         }
     }
 

@@ -24,7 +24,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Category Management - AayoJana</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/dashboard.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminDashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .content-area {
             padding: 20px;

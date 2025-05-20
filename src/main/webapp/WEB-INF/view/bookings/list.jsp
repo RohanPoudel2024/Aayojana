@@ -9,7 +9,13 @@
 <%
     User currentUser = (User) session.getAttribute("currentUser");
     List<Booking> bookings = (List<Booking>) request.getAttribute("bookings");
-    String message = request.getParameter("message");
+    
+    // Get message from session, not request parameter
+    String message = (String) session.getAttribute("message");
+    // Clear the message from session after displaying it
+    if (message != null) {
+        session.removeAttribute("message");
+    }
     
     EventService eventService = new EventService();
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
