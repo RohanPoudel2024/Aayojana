@@ -57,10 +57,6 @@
             <div class="date"><%= dateFormat.format(event.getDate()) %></div>
             <h1><%= event.getTitle() %></h1>
             <p><%= event.getDescription() != null ? event.getDescription() : "Join us for this amazing event!" %></p>
-            <div class="event-actions">
-                <div class="like"><i class="far fa-heart"></i> <span class="like-count">0</span></div>
-                <div class="share"><i class="fas fa-share-alt"></i> <span class="share-count">0</span></div>
-            </div>
         </div>
     </div>
     
@@ -78,12 +74,12 @@
             </div>
             <div class="price-card">
                 <% if(event.getPrice() > 0) { %>
-                    <div class="discount">20% OFF</div>
                     <p>NPR. <%= priceFormat.format(event.getPrice()) %> Ticket</p>
                 <% } else { %>
                     <div class="free-tag">FREE</div>
                     <p>Free Entry</p>
                 <% } %>
+                <p>Available Seats: <%= event.getAvailableSeats() %></p>
                 <% if(currentUser != null) { %>
                     <a href="${pageContext.request.contextPath}/booking?eventId=<%= event.getEventId() %>" class="btn btn-primary">Book Ticket</a>
                 <% } else { %>

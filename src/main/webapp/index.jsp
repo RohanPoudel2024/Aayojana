@@ -764,22 +764,25 @@
                 String[] eventNames = {"Tech Conference 2023", "Music Festival", "Food & Wine Expo", "Business Summit"};
                 String[] eventDates = {"Oct 15-16, 2023", "Nov 5, 2023", "Dec 10, 2023", "Jan 20, 2024"};
                 String[] eventLocations = {"New Delhi", "Mumbai", "Bangalore", "Hyderabad"};
+                String[] eventIds = {"1", "2", "3", "4"};
 
                 for(int i = 0; i < 4; i++) {
             %>
             <div class="event-card">
-                <div class="event-image">
-                    <img src="https://source.unsplash.com/random/300x200?event,<%= i %>" alt="<%= eventNames[i] %>">
-                </div>
-                <div class="event-details">
-                    <span class="event-date"><%= eventDates[i] %></span>
-                    <h3><%= eventNames[i] %></h3>
-                    <p>Join us for an amazing experience with industry experts and networking opportunities.</p>
-                    <div class="event-meta">
-                        <span><i class="fas fa-map-marker-alt"></i> <%= eventLocations[i] %></span>
-                        <span><i class="fas fa-ticket-alt"></i> From NPR. 1,999</span>
+                <a href="${pageContext.request.contextPath}/events/details?id=<%= eventIds[i] %>">
+                    <div class="event-image">
+                        <img src="https://source.unsplash.com/random/300x200?event,<%= i %>" alt="<%= eventNames[i] %>">
                     </div>
-                </div>
+                    <div class="event-details">
+                        <span class="event-date"><%= eventDates[i] %></span>
+                        <h3><%= eventNames[i] %></h3>
+                        <p>Join us for an amazing experience with industry experts and networking opportunities.</p>
+                        <div class="event-meta">
+                            <span><i class="fas fa-map-marker-alt"></i> <%= eventLocations[i] %></span>
+                            <span><i class="fas fa-ticket-alt"></i> From NPR. 1,999</span>
+                        </div>
+                    </div>
+                </a>
             </div>
             <% } %>
         </div>

@@ -12,6 +12,7 @@ public class Event {
     private double price;
     private int categoryId;  // Direct reference to a single category
     private byte[] imageData;
+    private String description;
     
     // Default constructor
     public Event() {
@@ -19,7 +20,7 @@ public class Event {
 
     // Constructor with fields
     public Event(int eventId, String title, String location, Date date, String time, 
-                int availableSeats, double price, int categoryId) {
+                int availableSeats, double price, int categoryId, String description) {
         this.eventId = eventId;
         this.title = title;
         this.location = location;
@@ -28,6 +29,7 @@ public class Event {
         this.availableSeats = availableSeats;
         this.price = price;
         this.categoryId = categoryId;
+        this.description = description;
     }
     
     // Getters and setters
@@ -105,6 +107,14 @@ public class Event {
     
     public boolean hasImage() {
         return imageData != null && imageData.length > 0;
+    }
+    
+    public String getDescription() {
+        return description;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
 

@@ -135,6 +135,45 @@
             background: radial-gradient(circle at center, rgba(74, 0, 224, 0.4), transparent);
             pointer-events: none;
         }
+
+        /* Enhanced clickable styling */
+        .event-item {
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .event-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(74, 0, 224, 0.15);
+        }
+
+        .event-item:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 0, 224, 0.3), 0 15px 30px rgba(74, 0, 224, 0.15);
+            transform: translateY(-8px);
+        }
+
+        .event-item a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Visual feedback when clicking */
+        .event-item:active {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(74, 0, 224, 0.1);
+        }
+
+        /* Make like button not trigger navigation */
+        .like {
+            position: relative;
+            z-index: 10;
+        }
     </style>
 </head>
 <body>
@@ -510,10 +549,12 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             this.classList.toggle('active');
             const icon = this.querySelector('i');
-            if (this.classList.contains('active')) {
-                icon.classList.replace('far', 'fas');
-            } else {
-                icon.classList.replace('fas', 'far');
+            if (icon) {
+                if (this.classList.contains('active')) {
+                    icon.classList.replace('far', 'fas');
+                } else {
+                    icon.classList.replace('fas', 'far');
+                }
             }
         });
     });
@@ -547,6 +588,37 @@ document.addEventListener('DOMContentLoaded', function() {
             imageObserver.observe(img);
         });
     }
+
+    // Make event cards clickable
+    const eventItems = document.querySelectorAll('.event-item');
+    eventItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            // Don't trigger if clicking on like button
+            if (e.target.closest('.like')) {
+                e.stopPropagation();
+                return;
+            }
+            
+            // Get the link inside the card and follow it
+            const link = this.querySelector('a').getAttribute('href');
+            if (link) {
+                window.location.href = link;
+            }
+        });
+        
+        // Add keyboard accessibility
+        item.setAttribute('tabindex', '0');
+        item.addEventListener('keydown', function(e) {
+            // Enter or space key
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const link = this.querySelector('a').getAttribute('href');
+                if (link) {
+                    window.location.href = link;
+                }
+            }
+        });
+    });
 });
 </script>
 </body>

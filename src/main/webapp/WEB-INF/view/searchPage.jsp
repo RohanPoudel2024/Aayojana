@@ -59,38 +59,57 @@
                 <div class="results-count">6 results</div>
                 <div class="events-grid">
                     <div class="event-item">
-                        <div class="image-placeholder">Event Image</div>
-                        <div class="like">❤️</div>
-                        <div class="discount">20% OFF</div>
-                        <h3>Pokhara Music Fest | Rockheads</h3>
-                        <p><span class="icon">📅</span>Saturday, May 20 | 08:00 PM</p>
-                        <p><span class="icon">📍</span>Pokhara, Nepal</p>
-                        <p>From Rs 499</p>
+                        <a href="${pageContext.request.contextPath}/events/details?id=<%= event.getEventId() %>">
+                            <div class="image-placeholder">Event Image</div>
+                            <div class="like">❤️</div>
+                            <div class="discount">20% OFF</div>
+                            <h3><%= event.getTitle() %></h3>
+                            <p><span class="icon">📅</span><%= dateFormat.format(event.getDate()) %> | <%= event.getTime() %></p>
+                            <p><span class="icon">📍</span><%= event.getLocation() %></p>
+                            <p>From Rs <%= priceFormat.format(event.getPrice()) %></p>
+                        </a>
                     </div>
                     <div class="event-item">
-                        <div class="image-placeholder">Event Image</div>
-                        <div class="like active">❤️</div>
-                        <div class="tag">New Event</div>
-                        <h3>Rock Fest | The Elements | Rockheads | Purna Rai</h3>
-                        <p><span class="icon">📅</span>Friday, December 10 | 08:00 PM</p>
-                        <p><span class="icon">📍</span>New York, NY</p>
+                        <a href="${pageContext.request.contextPath}/events/details?id=<%= event.getEventId() %>">
+                            <div class="image-placeholder">Event Image</div>
+                            <div class="like active">❤️</div>
+                            <div class="tag">New Event</div>
+                            <h3>Rock Fest | The Elements | Rockheads | Purna Rai</h3>
+                            <p><span class="icon">📅</span>Friday, December 10 | 08:00 PM</p>
+                            <p><span class="icon">📍</span>New York, NY</p>
+                        </a>
                     </div>
                     <div class="event-item">
-                        <div class="image-placeholder">Event Image</div>
-                        <div class="like">❤️</div>
-                        <div class="sold-out">Sold Out</div>
-                        <div class="tag">New Event</div>
-                        <h3>Gathering of Rock ICONS | Surprise Event</h3>
-                        <p><span class="icon">📅</span>Wednesday, June 20 | 09:15 PM</p>
-                        <p><span class="icon">📍</span>Kathmandu, Nepal</p>
+                        <a href="${pageContext.request.contextPath}/events/details?id=<%= event.getEventId() %>">
+                            <div class="image-placeholder">Event Image</div>
+                            <div class="like">❤️</div>
+                            <div class="sold-out">Sold Out</div>
+                            <div class="tag">New Event</div>
+                            <h3>Gathering of Rock ICONS | Surprise Event</h3>
+                            <p><span class="icon">📅</span>Wednesday, June 20 | 09:15 PM</p>
+                            <p><span class="icon">📍</span>Kathmandu, Nepal</p>
+                        </a>
                     </div>
                     <div class="event-item">
-                        <div class="image-placeholder">Event Image</div>
-                        <div class="like">❤️</div>
-                        <div class="tag">Invitation Only</div>
-                        <h3>Rock Weds ANGLIA | DESTINATION Weeding</h3>
-                        <p><span class="icon">📅</span>Monday, June 05 | 06:00 PM</p>
-                        <p><span class="icon">📍</span>Upper Mustang, Nepal</p>
+                        <a href="${pageContext.request.contextPath}/events/details?id=<%= event.getEventId() %>">
+                            <div class="image-placeholder">Event Image</div>
+                            <div class="like">❤️</div>
+                            <div class="tag">Invitation Only</div>
+                            <h3>Rock Weds ANGLIA | DESTINATION Weeding</h3>
+                            <p><span class="icon">📅</span>Monday, June 05 | 06:00 PM</p>
+                            <p><span class="icon">📍</span>Upper Mustang, Nepal</p>
+                        </a>
+                    </div>
+                    <div class="event-item">
+                        <a href="${pageContext.request.contextPath}/events/details?id=<%= event.getEventId() %>">
+                            <div class="image-placeholder">Event Image</div>
+                            <div class="like">❤️</div>
+                            <div class="discount">20% OFF</div>
+                            <h3><%= event.getTitle() %></h3>
+                            <p><span class="icon">📅</span><%= dateFormat.format(event.getDate()) %> | <%= event.getTime() %></p>
+                            <p><span class="icon">📍</span><%= event.getLocation() %></p>
+                            <p>From Rs <%= priceFormat.format(event.getPrice()) %></p>
+                        </a>
                     </div>
                 </div>
                 <div class="view-more">
@@ -103,20 +122,24 @@
             <div class="recommended-grid">
                 <div class="events-grid">
                     <div class="event-item">
-                        <div class="image-placeholder">Event Image</div>
-                        <div class="discount">20% OFF</div>
-                        <h3>Fuel Your Passion for Rock Music</h3>
-                        <p><span class="icon">📅</span>Tuesday, August 18 | 06:00 PM</p>
-                        <p><span class="icon">📍</span>Jhapa, Nepal</p>
-                        <p>From Rs100</p>
+                        <a href="${pageContext.request.contextPath}/events/details?id=<%= event.getEventId() %>">
+                            <div class="image-placeholder">Event Image</div>
+                            <div class="discount">20% OFF</div>
+                            <h3>Fuel Your Passion for Rock Music</h3>
+                            <p><span class="icon">📅</span>Tuesday, August 18 | 06:00 PM</p>
+                            <p><span class="icon">📍</span>Jhapa, Nepal</p>
+                            <p>From Rs100</p>
+                        </a>
                     </div>
                     <div class="event-item">
-                        <div class="image-placeholder">Event Image</div>
-                        <div class="discount">20% OFF</div>
-                        <h3>Musical Fusion Festival for Wild Life Conservation</h3>
-                        <p><span class="icon">📅</span>Monday, June 01 | 06:00 PM</p>
-                        <p><span class="icon">📍</span>Koshi Tappu, Nepal</p>
-                        <p>From Rs900</p>
+                        <a href="${pageContext.request.contextPath}/events/details?id=<%= event.getEventId() %>">
+                            <div class="image-placeholder">Event Image</div>
+                            <div class="discount">20% OFF</div>
+                            <h3>Musical Fusion Festival for Wild Life Conservation</h3>
+                            <p><span class="icon">📅</span>Monday, June 01 | 06:00 PM</p>
+                            <p><span class="icon">📍</span>Koshi Tappu, Nepal</p>
+                            <p>From Rs900</p>
+                        </a>
                     </div>
                 </div>
                 <div class="carousel">
@@ -171,5 +194,39 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Make event cards clickable
+    const eventItems = document.querySelectorAll('.event-item');
+    eventItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            // Don't trigger if clicking on like button
+            if (e.target.closest('.like')) {
+                e.stopPropagation();
+                return;
+            }
+            
+            // Get the link inside the card
+            const link = this.querySelector('a');
+            if (link && link.getAttribute('href')) {
+                window.location.href = link.getAttribute('href');
+            }
+        });
+        
+        // Add keyboard accessibility
+        item.setAttribute('tabindex', '0');
+        item.addEventListener('keydown', function(e) {
+            // Enter or space key
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const link = this.querySelector('a');
+                if (link && link.getAttribute('href')) {
+                    window.location.href = link.getAttribute('href');
+                }
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>
