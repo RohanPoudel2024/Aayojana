@@ -17,7 +17,6 @@
 <html>
 <head>
     <title>Confirm Booking - <%= event.getTitle() %></title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/eventList.css">
     <style>
@@ -137,30 +136,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <div class="logo">AYO-JANA</div>
-        <div class="nav-links">
-            <a href="${pageContext.request.contextPath}/EventsServlet">Explore</a>
-            <a href="#">Upcoming Events</a>
-            <a href="${pageContext.request.contextPath}/booking?action=list" class="active">My Bookings</a>
-        </div>
-        <% if (currentUser != null) { %>
-            <div class="user-actions">
-                <a href="${pageContext.request.contextPath}/profile" class="user-profile">
-                    <span class="username"><%= currentUser.getName() %></span>
-                    <span class="icon"><i class="fas fa-user"></i></span>
-                </a>
-                <form action="${pageContext.request.contextPath}/logout" method="post">
-                    <button type="submit" class="logout-btn">Logout</button>
-                </form>
-            </div>
-        <% } else { %>
-            <div class="auth-links">
-                <a href="${pageContext.request.contextPath}/login" class="sign-in">Login</a>
-                <a href="${pageContext.request.contextPath}/signup" class="sign-up">Sign Up</a>
-            </div>
-        <% } %>
-    </div>
+    <jsp:include page="../common/userHeader.jsp" />
     
     <div class="main-content">
         <div class="booking-container">
@@ -226,44 +202,11 @@
                         <a href="${pageContext.request.contextPath}/booking?eventId=<%= event.getEventId() %>" class="btn btn-outline">Back</a>
                         <button type="submit" class="btn btn-primary">Confirm Booking</button>
                     </div>
-                </form>
-            </div>
+                </form>            </div>
         </div>
     </div>
     
-    <div class="footer">
-        <div class="footer-column">
-            <div class="logo">AYO-JANA</div>
-            <p>Your premier platform for discovering and booking the best events in town.</p>
-            <div class="footer-social">
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-            </div>
-        </div>
-        <div class="footer-column">
-            <h4>Resources</h4>
-            <a href="#">User guides</a>
-            <a href="#">Help Center</a>
-            <a href="#">Partners</a>
-            <a href="#">Taxes</a>
-        </div>
-        <div class="footer-column">
-            <h4>Company</h4>
-            <a href="#">About</a>
-            <a href="#">Contact Us</a>
-            <a href="#">Careers</a>
-            <a href="#">Blog</a>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>© 2025 AYO-JANA, Inc. • Privacy • Terms • Sitemap</p>
-        <div class="social-icons">
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
-        </div>
-    </div>
+    <jsp:include page="../common/userFooter.jsp" />
 </div>
 </body>
 </html>

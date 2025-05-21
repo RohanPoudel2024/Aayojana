@@ -47,8 +47,9 @@
         }
     </style>
 </head>
-<body>
-    <div class="container">
+<body>    <div class="container">
+        <jsp:include page="common/userHeader.jsp" />
+        
         <div class="main-content">
             <div class="profile-section">
                 <div class="profile-avatar">
@@ -104,9 +105,10 @@
                         
                         <button type="submit" class="save-button">Save Changes</button>
                     </form>
-                </div>
-            </div>
+                </div>            </div>
         </div>
+        
+        <jsp:include page="common/userFooter.jsp" />
     </div>
 
     <script>

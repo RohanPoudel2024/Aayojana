@@ -9,11 +9,6 @@
 <%@ page import="service.EventService" %>
 <%
     User currentUser = (User) session.getAttribute("currentUser");
-    if (currentUser == null || !"admin".equals(currentUser.getRole())) {
-        response.sendRedirect(request.getContextPath() + "/login");
-        return;
-    }
-
     BookingService bookingService = new BookingService();
     List<Booking> allBookings = bookingService.getAllBookings();
     List<Event> events = (List<Event>) request.getAttribute("events");
@@ -117,9 +112,12 @@
 </head>
 <body>
 <div class="container">
-    <%@ include file="../common/adminHeader.jsp" %>
-
+    <!-- Include Admin Sidebar -->
+    <jsp:include page="../common/adminSidebar.jsp" />
+    
     <div class="main-content">
+        <!-- Include Admin Header -->
+        <jsp:include page="../common/adminHeader.jsp" />
         <div class="bookings-container">
             <h1>Manage Bookings</h1>
 

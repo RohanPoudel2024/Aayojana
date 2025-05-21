@@ -26,109 +26,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Event Management - AayoJana</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminDashboard.css">
+    <!-- <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/adminDashboard.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .btn-add {
-            display: inline-flex;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #4a00e0;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        .btn-add:hover {
-            background-color: #3c00b3;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        
-        th {
-            background-color: #f8f8f8;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .event-actions {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .btn-action {
-            padding: 5px 10px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        
-        .btn-edit {
-            background-color: #f0f8ff;
-            color: #0066cc;
-        }
-        
-        .btn-delete {
-            background-color: #fff0f0;
-            color: #cc0000;
-        }
-        
-        .price {
-            color: #4a00e0;
-            font-weight: 600;
-        }
-        
-        .seats {
-            font-weight: 600;
-        }
-        
-        .low-seats {
-            color: #cc0000;
-        }
-        
-        .event-image {
-            max-width: 100px;
-            max-height: 100px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-        
-        .image-placeholder {
-            font-size: 12px;
-            color: #999;
-            text-align: center;
-            border: 1px dashed #ccc;
-            padding: 10px;
-            border-radius: 5px;
-            max-width: 100px;
-        }
-    </style>
 </head>
 <body>
 <div class="container">
-    <!-- Include Admin Header -->
-    <jsp:include page="../common/adminHeader.jsp" />
+    <!-- Include Admin Sidebar -->
+    <jsp:include page="../common/adminSidebar.jsp" />
     
-    <div class="content-area">
+    <div class="main-content">
+        <!-- Include Admin Header -->
+        <jsp:include page="../common/adminHeader.jsp" />
+    
+        <div class="content-area">
         <div class="page-title">
             <h1>Event Management</h1>
             <a href="${pageContext.request.contextPath}/admin/events?action=new" class="btn-add">
@@ -194,7 +104,7 @@
                     </tr>
                 <% } %>
             </tbody>
-        </table>
+        </table>        </div>
     </div>
 </div>
 </body>

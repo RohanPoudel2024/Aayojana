@@ -1,0 +1,170 @@
+/* ===== HEADER STYLES ===== */
+:root {
+  --primary-color: #6200ee;
+  --primary-light: #9e47ff;
+  --primary-dark: #3700b3;
+  --secondary-color: #03dac6;
+  --secondary-dark: #018786;
+  --background: #fafafa;
+  --surface: #ffffff;
+  --error: #b00020;
+  --success: #00c853;
+  --on-primary: #ffffff;
+  --on-secondary: #000000;
+  --on-background: #1d1d1d;
+  --on-surface: #1d1d1d;
+  --on-error: #ffffff;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.1);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  --shadow-xl: 0 12px 32px rgba(0,0,0,0.14);
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 24px;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 1.25rem max(2rem, 5%);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.header .logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #4a00e0;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.header .logo::before {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--secondary-color);
+  top: 50%;
+  right: -10px;
+  transform: translateY(-50%);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  margin: 0 20px;
+  text-decoration: none;
+  color: #666;
+  font-size: 16px;
+  padding-bottom: 5px;
+  transition: color var(--transition-normal);
+  position: relative;
+}
+
+.nav-links a:hover {
+  color: #4a00e0;
+}
+
+.nav-links a.active {
+  color: #4a00e0;
+  border-bottom: 2px solid #4a00e0;
+}
+
+/* User area in header */
+.user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user .login-btn, .user .signup-btn {
+  padding: 0.625rem 1.25rem;
+  border-radius: 100px;
+  font-weight: 600;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+}
+
+.user .login-btn {
+  color: var(--primary-color);
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+}
+
+.user .login-btn:hover {
+  background-color: rgba(98, 0, 238, 0.08);
+}
+
+.user .signup-btn {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+  color: var(--on-primary);
+  box-shadow: 0 4px 12px rgba(98, 0, 238, 0.25);
+}
+
+.user .signup-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(98, 0, 238, 0.35);
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--on-background);
+  transition: all var(--transition-normal);
+  padding: 0.625rem 1.25rem;
+  border-radius: 100px;
+  font-weight: 600;
+}
+
+.user-profile:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.user-profile .icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-color);
+  color: var(--on-primary);
+  border-radius: 50%;
+  font-size: 0.875rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .nav-links {
+    order: 3;
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .user {
+    order: 2;
+  }
+}

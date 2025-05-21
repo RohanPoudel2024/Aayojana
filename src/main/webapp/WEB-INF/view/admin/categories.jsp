@@ -145,39 +145,12 @@
 </head>
 <body>
 <div class="container">
-    <div class="sidebar">
-        <div class="logo">AYO-JANA</div>
-        <a href="${pageContext.request.contextPath}/Dashboard"><span class="icon">📊</span>Dashboard</a>
-        <a href="${pageContext.request.contextPath}/admin/users"><span class="icon">👥</span>Users</a>
-        <a href="${pageContext.request.contextPath}/admin/events"><span class="icon">🎉</span>Events</a>
-        <a href="${pageContext.request.contextPath}/admin/categories" class="active"><span class="icon">🏷️</span>Categories</a>
-        <a href="#"><span class="icon">📋</span>Reports</a>
-        <a href="#"><span class="icon">⚙️</span>Settings</a>
-        <div class="user-account">
-            <a href="${pageContext.request.contextPath}/profile"><span class="icon">👤</span>User Account</a>
-            <form action="${pageContext.request.contextPath}/logout" method="post">
-                <button type="submit" style="background: none; border: none; color: #666; text-align: left; width: 100%; padding: 12px 0; cursor: pointer; display: flex; align-items: center;">
-                    <span class="icon" style="margin-right: 10px;">🚪</span>Logout
-                </button>
-            </form>
-        </div>
-    </div>
+    <!-- Include Admin Sidebar -->
+    <jsp:include page="../common/adminSidebar.jsp" />
     
     <div class="main-content">
-        <div class="header">
-            <div class="nav-links">
-                <a href="${pageContext.request.contextPath}/Dashboard">Dashboard</a>
-                <a href="${pageContext.request.contextPath}/admin/users">Users</a>
-                <a href="${pageContext.request.contextPath}/admin/events">Events</a>
-                <a href="${pageContext.request.contextPath}/admin/categories" class="active">Categories</a>
-            </div>
-            <div class="user">
-                <% if (currentUser != null) { %>
-                <span><%= currentUser.getName() %></span>
-                <span class="icon">👤</span>
-                <% } %>
-            </div>
-        </div>
+        <!-- Include Admin Header -->
+        <jsp:include page="../common/adminHeader.jsp" />
         
         <div class="content-area">
             <div class="page-title">

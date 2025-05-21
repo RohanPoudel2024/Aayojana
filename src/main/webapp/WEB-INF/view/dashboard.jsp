@@ -11,46 +11,14 @@
 </head>
 <body>
 <div class="container">
-    <div class="sidebar">
-        <div class="logo">AYO-JANA</div>
-        <a href="${pageContext.request.contextPath}/Dashboard" class="active"><span class="icon"><i class="fas fa-chart-bar"></i></span>Dashboard</a>
-        <a href="${pageContext.request.contextPath}/admin/users"><span class="icon"><i class="fas fa-users"></i></span>Users</a>
-        <a href="${pageContext.request.contextPath}/admin/events"><span class="icon"><i class="fas fa-calendar-alt"></i></span>Events</a>
-        <a href="${pageContext.request.contextPath}/admin/categories"><span class="icon"><i class="fas fa-tag"></i></span>Categories</a>
-        <a href="#"><span class="icon"><i class="fas fa-clipboard-list"></i></span>Reports</a>
-        <a href="#"><span class="icon"><i class="fas fa-cog"></i></span>Settings</a>
-        <div class="user-account">
-            <a href="#"><span class="icon"><i class="fas fa-user"></i></span>User Account</a>
-            <a href="${pageContext.request.contextPath}/profile"><span class="icon"><i class="fas fa-eye"></i></span>View profile</a>
-            <form action="${pageContext.request.contextPath}/logout" method="post">
-                <button type="submit" style="background: none; border: none; color: #666; text-align: left; width: 100%; padding: 12px 0; cursor: pointer; display: flex; align-items: center;">
-                    <span class="icon" style="margin-right: 10px;"><i class="fas fa-sign-out-alt"></i></span>Logout
-                </button>
-            </form>
-        </div>
-    </div>
-    <div class="main-content">
-        <div class="header">
-            <div class="nav-links">
-                <a href="#" class="active">Dashboard</a>
-                <a href="${pageContext.request.contextPath}/admin/users">Users</a>
-                <a href="#">Reports</a>
-            </div>
-            <div class="user">
-                <%
-                    User user = (User) session.getAttribute("currentUser");
-                    if (user != null) {
-                %>
-                <span><%=user.getName()%></span>
-                <span class="icon"><i class="fas fa-bell"></i></span>
-                <span class="icon"><i class="fas fa-user-circle"></i></span>
-            </div>
-            <%
-                } else {
-                    response.sendRedirect(request.getContextPath() + "/login");
-                }
-            %>
-        </div>
+    <!-- Include Admin Sidebar -->
+    <jsp:include page="common/adminSidebar.jsp" />
+      <div class="main-content">
+        <!-- Include Admin Header -->
+        <jsp:include page="common/adminHeader.jsp" />
+        <%
+            User user = (User) session.getAttribute("currentUser");
+        %>
 
         <!-- Dashboard Overview -->
         <div class="section">

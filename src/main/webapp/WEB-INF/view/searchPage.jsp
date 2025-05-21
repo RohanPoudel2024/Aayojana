@@ -13,19 +13,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <div class="logo">AYO-JANA</div>
-        <div class="nav-links">
-            <a href="#" class="active">Explore</a>
-            <a href="#">Upcoming Events</a>
-            <a href="#">My Events</a>
-        </div>
-        <div class="user">
-            <span class="icon">🔔</span>
-            <span>User Account</span>
-            <span class="icon">👤</span>
-        </div>
-    </div>
+    <jsp:include page="common/userHeader.jsp" />
     <div class="main-content">
         <div class="search-bar">
             <h1>Search Event</h1>

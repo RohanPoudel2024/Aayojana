@@ -28,62 +28,62 @@
 <head>
     <title><%= event.getTitle() %> - AayoJana</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/eventDetails.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/heroSection.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/timingLocation.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/aboutEvent.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/eventGallery.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/similarEvents.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/ctaSection.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/floatingBtn.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/animations.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pageTransitions.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <div class="logo">AYO-JANA</div>
-        <div class="nav-links">
-            <a href="${pageContext.request.contextPath}/EventsServlet" class="active">Explore</a>
-            <a href="${pageContext.request.contextPath}/events/upcoming">Upcoming Events</a>
-            <a href="#">My Events</a>
-        </div>
-        <div class="user">
-            <% if (currentUser != null) { %>
-            <a href="${pageContext.request.contextPath}/profile" class="user-profile">
-                <span class="username"><%= currentUser.getName() %></span>
-                <span class="icon"><i class="fas fa-user"></i></span>
-            </a>
-            <% } else { %>
-            <a href="${pageContext.request.contextPath}/login" class="login-btn">Login</a>
-            <a href="${pageContext.request.contextPath}/signup" class="signup-btn">Sign Up</a>
-            <% } %>
+<div class="page-transition">
+    <div class="page-transition-content">
+        <div class="page-transition-spinner"></div>
+        <div class="page-transition-text">Loading amazing events...</div>
+    </div>
+</div>
+
+<div class="container page-content">
+    <jsp:include page="common/userHeader.jsp" />
         </div>
     </div>
-    
-    <div class="hero-section">
-        <div class="event-card">
-            <div class="date"><%= dateFormat.format(event.getDate()) %></div>
-            <h1><%= event.getTitle() %></h1>
-            <p><%= event.getDescription() != null ? event.getDescription() : "Join us for this amazing event!" %></p>
+      <div class="hero-section animate-fadeIn">
+        <div class="event-card animate-scaleIn">
+            <div class="date animate-fadeInUp delay-200"><%= dateFormat.format(event.getDate()) %></div>
+            <h1 class="animate-fadeInUp delay-300"><%= event.getTitle() %></h1>
+            <p class="animate-fadeInUp delay-400"><%= event.getDescription() != null ? event.getDescription() : "Join us for this amazing event!" %></p>
         </div>
     </div>
     
     <div class="main-content">
-        <div class="section timing-location">
+        <div class="section timing-location animate-fadeInUp">
             <h2>Timing and location</h2>
-            <div class="info-card">
+            <div class="info-card animate-fadeInLeft delay-200">
                 <h3>Date and Time</h3>
                 <p><span class="icon"><i class="fas fa-calendar"></i></span> <%= dateFormat.format(event.getDate()) %></p>
                 <p><span class="icon"><i class="fas fa-clock"></i></span> <%= event.getTime() %></p>
             </div>
-            <div class="info-card">
+            <div class="info-card animate-fadeInLeft delay-300">
                 <h3>Place</h3>
                 <p><span class="icon"><i class="fas fa-map-marker-alt"></i></span> <%= event.getLocation() %></p>
             </div>
-            <div class="price-card">
+            <div class="price-card animate-fadeInRight delay-400">
                 <% if(event.getPrice() > 0) { %>
-                    <p>NPR. <%= priceFormat.format(event.getPrice()) %> Ticket</p>
+                    <p class="animate-pulse">NPR. <%= priceFormat.format(event.getPrice()) %> Ticket</p>
                 <% } else { %>
-                    <div class="free-tag">FREE</div>
+                    <div class="free-tag animate-pulse">FREE</div>
                     <p>Free Entry</p>
                 <% } %>
-                <p>Available Seats: <%= event.getAvailableSeats() %></p>
+                <p class="seats-info">Available Seats: <span class="seat-count animate-fadeIn delay-500"><%= event.getAvailableSeats() %></span></p>
                 <% if(currentUser != null) { %>
-                    <a href="${pageContext.request.contextPath}/booking?eventId=<%= event.getEventId() %>" class="btn btn-primary">Book Ticket</a>
+                    <a href="${pageContext.request.contextPath}/booking?eventId=<%= event.getEventId() %>" class="btn btn-primary animate-fadeIn delay-700">Book Ticket</a>
                 <% } else { %>
-                    <a href="${pageContext.request.contextPath}/login?redirect=events/details?id=<%= event.getEventId() %>" class="btn btn-primary">Login to Book</a>
+                    <a href="${pageContext.request.contextPath}/login?redirect=events/details?id=<%= event.getEventId() %>" class="btn btn-primary animate-fadeIn delay-700">Login to Book</a>
                 <% } %>
             </div>
         </div>
@@ -117,6 +117,8 @@
                 <div class="album-image">
                     <img src="${pageContext.request.contextPath}/eventImage?eventId=<%= event.getEventId() %>" 
                          alt="<%= event.getTitle() %>">
+                    <div class="overlay-icon"><i class="fas fa-search-plus"></i></div>
+                    <div class="caption">Event showcase image</div>
                 </div>
             </div>
         </div>
@@ -140,10 +142,12 @@
                                     <span>No Image</span>
                                 </div>
                             <% } %>
-                            <h3><%= similarEvent.getTitle() %></h3>
-                            <p><span class="icon"><i class="fas fa-calendar"></i></span> <%= dateFormat.format(similarEvent.getDate()) %> | <%= similarEvent.getTime() %></p>
-                            <p><span class="icon"><i class="fas fa-map-marker-alt"></i></span> <%= similarEvent.getLocation() %></p>
-                            <p class="price">From NPR. <%= priceFormat.format(similarEvent.getPrice()) %></p>
+                            <div class="event-content">
+                                <h3><%= similarEvent.getTitle() %></h3>
+                                <p><span class="icon"><i class="fas fa-calendar"></i></span> <%= dateFormat.format(similarEvent.getDate()) %> | <%= similarEvent.getTime() %></p>
+                                <p><span class="icon"><i class="fas fa-map-marker-alt"></i></span> <%= similarEvent.getLocation() %></p>
+                                <p class="price">From NPR. <%= priceFormat.format(similarEvent.getPrice()) %></p>
+                            </div>
                         </a>
                     </div>
                 <% } 
@@ -157,58 +161,50 @@
             <div class="view-more">
                 <a href="${pageContext.request.contextPath}/EventsServlet?category=<%= category.getCategoryId() %>">
                     View more events <i class="fas fa-chevron-right"></i>
-                </a>
+                </a>            </div>
+        </div>
+        
+        <div class="section cta-section">
+            <div class="cta-decoration cta-decoration-1"></div>
+            <div class="cta-decoration cta-decoration-2"></div>
+            <div class="cta-decoration cta-decoration-3"></div>
+            <div class="cta-content">
+                <h2>Ready to Join This Event?</h2>
+                <p>Don't miss out on this incredible opportunity to be part of <%= event.getTitle() %>. Book your tickets now and create unforgettable memories!</p>
+                <div class="cta-buttons">
+                    <% if(currentUser != null) { %>
+                        <a href="${pageContext.request.contextPath}/booking?eventId=<%= event.getEventId() %>" class="cta-btn cta-btn-primary">
+                            <i class="fas fa-ticket-alt"></i>&nbsp; Book Tickets Now
+                        </a>
+                    <% } else { %>
+                        <a href="${pageContext.request.contextPath}/login?redirect=events/details?id=<%= event.getEventId() %>" class="cta-btn cta-btn-primary">
+                            <i class="fas fa-sign-in-alt"></i>&nbsp; Login to Book
+                        </a>
+                    <% } %>
+                    <a href="${pageContext.request.contextPath}/EventsServlet" class="cta-btn cta-btn-secondary">
+                        <i class="fas fa-calendar-alt"></i>&nbsp; Explore More Events
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <div class="footer">
-        <div class="footer-column">
-            <div class="logo">AYO-JANA</div>
-            <p>Your premier platform for discovering and booking the best events in town.</p>
-        </div>
-        <div class="footer-column">
-            <h4>Categories</h4>
-            <a href="${pageContext.request.contextPath}/EventsServlet">All</a>
-            <a href="${pageContext.request.contextPath}/EventsServlet?category=1">Music</a>
-            <a href="${pageContext.request.contextPath}/EventsServlet?category=2">Sport</a>
-            <a href="${pageContext.request.contextPath}/EventsServlet?category=3">Exhibition</a>
-            <a href="${pageContext.request.contextPath}/EventsServlet?category=4">Business</a>
-            <a href="${pageContext.request.contextPath}/EventsServlet?category=5">Photography</a>
-        </div>
-        <div class="footer-column">
-            <h4>Resources</h4>
-            <a href="#">User guides</a>
-            <a href="#">Help Center</a>
-            <a href="#">Partners</a>
-            <a href="#">Taxes</a>
-        </div>
-        <div class="footer-column">
-            <h4>Company</h4>
-            <a href="#">About</a>
-        </div>
-        <div class="footer-column">
-            <h4>Stay in the loop</h4>
-            <p>For Event announcements and exclusive insights</p>
-            <div class="subscribe">
-                <input type="email" placeholder="Input your email">
-                <button>Subscribe</button>
-            </div>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>© 2025 AYO-JANA, Inc. • Privacy • Terms • Sitemap</p>
-        <div class="social-icons">
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
-        </div>
-    </div>
+    </div>    <jsp:include page="common/userFooter.jsp" />
 </div>
+
+<% if(currentUser != null) { %>
+<a href="${pageContext.request.contextPath}/booking?eventId=<%= event.getEventId() %>" class="floating-action-btn">
+    <i class="fas fa-ticket-alt"></i>
+    <span class="fab-tooltip">Book Now</span>
+</a>
+<% } else { %>
+<a href="${pageContext.request.contextPath}/login?redirect=events/details?id=<%= event.getEventId() %>" class="floating-action-btn">
+    <i class="fas fa-sign-in-alt"></i>
+    <span class="fab-tooltip">Login to Book</span>
+</a>
+<% } %>
 
 <script>
     // Toggle like button
-    document.querySelector('.like').addEventListener('click', function() {
+    document.querySelector('.like')?.addEventListener('click', function() {
         this.classList.toggle('active');
         const icon = this.querySelector('i');
         if (this.classList.contains('active')) {
@@ -232,6 +228,180 @@
         } else {
             readMoreBtn.textContent = 'Read more';
         }
+    }
+    
+    // Add scroll reveal effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize page transition
+        const pageTransition = document.querySelector('.page-transition');
+        if (pageTransition) {
+            // Hide transition overlay after page load
+            setTimeout(() => {
+                pageTransition.classList.remove('active');
+            }, 300);
+        }
+
+        // Handle links for page transitions
+        document.querySelectorAll('a').forEach(link => {
+            // Skip links that open in new tabs or are anchors
+            if (link.getAttribute('target') === '_blank' || 
+                link.getAttribute('href')?.startsWith('#') ||
+                link.getAttribute('href')?.startsWith('javascript:')) {
+                return;
+            }
+            
+            link.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                
+                // Skip if no href
+                if (!href) return;
+                
+                // Handle page transition
+                e.preventDefault();
+                
+                // Show transition overlay
+                if (pageTransition) {
+                    pageTransition.classList.add('active');
+                    
+                    // Navigate after animation
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 500);
+                } else {
+                    // If no transition element, just navigate
+                    window.location.href = href;
+                }
+            });
+        });
+        
+        // Handle floating action button visibility
+        const fab = document.querySelector('.floating-action-btn');
+        const footer = document.querySelector('footer');
+        if (fab && footer) {
+            window.addEventListener('scroll', function() {
+                const footerRect = footer.getBoundingClientRect();
+                
+                // Hide FAB when footer is visible
+                if (footerRect.top < window.innerHeight) {
+                    fab.classList.add('fab-hidden');
+                } else {
+                    fab.classList.remove('fab-hidden');
+                }
+            });
+        }
+        
+        // Animate elements on scroll
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.section:not(.animate-active)');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.2;
+                
+                if (elementPosition < screenPosition) {
+                    element.classList.add('animate-active');
+                    element.style.animation = 'fadeInUp 0.8s ease-out forwards';
+                }
+            });
+        };
+        
+        // Initial check
+        animateOnScroll();
+        
+        // Listen for scroll
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Animate event items with staggered delay
+        const eventItems = document.querySelectorAll('.event-item');
+        
+        eventItems.forEach((item, index) => {
+            setTimeout(() => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    item.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 100);
+            }, index * 150);
+        });
+        
+        // Image gallery interaction
+        const albumImages = document.querySelectorAll('.album-image');
+        albumImages.forEach(image => {
+            image.addEventListener('click', function() {
+                createLightbox(this.querySelector('img').src, this.querySelector('.caption')?.textContent);
+            });
+        });
+        
+        // Hover effects for buttons
+        const buttons = document.querySelectorAll('.btn, .cta-btn');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.15)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+            });
+        });
+    });
+      // Create a lightbox for gallery images
+    function createLightbox(imgSrc, caption) {
+        // Create lightbox container
+        const lightbox = document.createElement('div');
+        lightbox.className = 'lightbox animate-fadeIn';
+        lightbox.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 2rem;';
+        
+        // Create image container
+        const imgContainer = document.createElement('div');
+        imgContainer.style.cssText = 'position: relative; max-width: 90%; max-height: 80%;';
+        imgContainer.className = 'animate-scaleIn';
+        
+        // Create image
+        const img = document.createElement('img');
+        img.src = imgSrc;
+        img.style.cssText = 'max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);';
+        
+        // Close button
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '&times;';
+        closeBtn.style.cssText = 'position: absolute; top: -20px; right: -20px; background-color: white; color: #18181b; border-radius: 50%; width: 40px; height: 40px; font-size: 24px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);';
+        
+        // Caption
+        if (caption) {
+            const captionElement = document.createElement('div');
+            captionElement.textContent = caption;
+            captionElement.style.cssText = 'color: white; text-align: center; margin-top: 1rem; font-size: 1rem; font-weight: 500;';
+            imgContainer.appendChild(captionElement);
+        }
+        
+        // Add elements to DOM
+        imgContainer.appendChild(img);
+        imgContainer.appendChild(closeBtn);
+        lightbox.appendChild(imgContainer);
+        document.body.appendChild(lightbox);
+        
+        // Close on click
+        closeBtn.addEventListener('click', () => {
+            lightbox.classList.add('animate-fadeOut');
+            setTimeout(() => {
+                document.body.removeChild(lightbox);
+            }, 300);
+        });
+        
+        // Close on outside click
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.classList.add('animate-fadeOut');
+                setTimeout(() => {
+                    document.body.removeChild(lightbox);
+                }, 300);
+            }
+        });
     }
 </script>
 </body>

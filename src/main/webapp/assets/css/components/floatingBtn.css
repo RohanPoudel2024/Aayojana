@@ -1,0 +1,94 @@
+/* Floating Action Button Styles */
+.floating-action-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 6px 20px rgba(109, 99, 255, 0.3);
+    cursor: pointer;
+    z-index: 99;
+    transform: scale(0);
+    animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation-delay: 1.5s;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                box-shadow 0.3s ease,
+                background 0.3s ease;
+}
+
+.floating-action-btn:hover {
+    transform: scale(1.15) rotate(10deg);
+    box-shadow: 0 10px 25px rgba(109, 99, 255, 0.4);
+    background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+}
+
+.floating-action-btn i {
+    transform: translateZ(0);
+    transition: transform 0.3s ease;
+}
+
+.floating-action-btn:hover i {
+    transform: rotate(-10deg);
+}
+
+.floating-action-btn::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid rgba(109, 99, 255, 0.2);
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.floating-action-btn:hover::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.fab-tooltip {
+    position: absolute;
+    right: 75px;
+    background-color: rgba(24, 24, 27, 0.9);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateX(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.floating-action-btn:hover .fab-tooltip {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+@media (max-width: 768px) {
+    .floating-action-btn {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+}
+
+/* Hide FAB when footer is visible */
+.fab-hidden {
+    opacity: 0;
+    transform: translateY(30px) scale(0.8);
+    pointer-events: none;
+}
