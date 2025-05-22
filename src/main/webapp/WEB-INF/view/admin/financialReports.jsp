@@ -197,10 +197,41 @@
         <!-- Include Admin Header -->
         <jsp:include page="../common/adminHeader.jsp" />
         
-        <div class="content-area" style="padding: 20px;">
-            <div class="page-title">
+        <div class="content-area" style="padding: 20px;">            <div class="page-title">
                 <h1>Financial Reports</h1>
+            </div>            <% if (request.getAttribute("debugInfo") != null) { %>
+            <div style="background-color: #f8f9fa; padding: 10px; margin-bottom: 15px; border-radius: 4px; border-left: 4px solid #17a2b8; font-size: 0.875rem;">
+                Debug Info: <%= request.getAttribute("debugInfo") %>
             </div>
+            <% } %>
+            
+            <% if (request.getAttribute("errorInfo") != null) { %>
+            <div style="background-color: #f8d7da; padding: 10px; margin-bottom: 15px; border-radius: 4px; border-left: 4px solid #dc3545; font-size: 0.875rem;">
+                <%= request.getAttribute("errorInfo") %>
+            </div>
+            <% } %>
+            
+            <!-- Include sample data widget -->
+            <jsp:include page="addSampleDataWidget.jsp" />
+            
+            <!-- Include sample data widget -->
+            <jsp:include page="sampleDataWidget.jsp" />
+            
+            <% if (request.getAttribute("bookingsCount") != null && ((Integer)request.getAttribute("bookingsCount")) == 0) { %>
+            <div style="background-color: #fff3cd; padding: 10px; margin-bottom: 15px; border-radius: 4px; border-left: 4px solid #ffc107; font-size: 0.875rem;">
+                <p>No booking data found. You can add sample data for testing purposes:</p>
+                <form action="${pageContext.request.contextPath}/admin/financial-reports" method="post">
+                    <input type="hidden" name="action" value="addSampleData">
+                    <button type="submit" style="background-color: #ffc107; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Add Sample Data</button>
+                </form>
+            </div>
+            <% } %>
+            
+            <% if (request.getAttribute("dataSampleAdded") != null) { %>
+            <div style="background-color: #d4edda; padding: 10px; margin-bottom: 15px; border-radius: 4px; border-left: 4px solid #28a745; font-size: 0.875rem;">
+                Sample data added successfully! Please refresh to see the reports.
+            </div>
+            <% } %>
             
             <!-- Report Navigation -->
             <div class="report-nav">
@@ -220,27 +251,22 @@
             <% if ("overview".equals(selectedReport)) { %>
                 <div class="report-section">
                     <h2>Revenue Overview</h2>
-                    
-                    <div class="overview-cards">
+                      <div class="overview-cards">
                         <div class="overview-card">
                             <div class="title">Total Revenue</div>
-                            <div class="amount">${totalRevenue}</div>
-                            <div class="period">All time</div>
+                            <div class="icon"><i class="fas fa-money-bill-wave fa-2x"></i></div>
                         </div>
                         <div class="overview-card">
                             <div class="title">This Year</div>
-                            <div class="amount">${yearRevenue}</div>
-                            <div class="period">Current year</div>
+                            <div class="icon"><i class="fas fa-calendar-alt fa-2x"></i></div>
                         </div>
                         <div class="overview-card">
                             <div class="title">This Month</div>
-                            <div class="amount">${monthRevenue}</div>
-                            <div class="period">Current month</div>
+                            <div class="icon"><i class="fas fa-calendar-check fa-2x"></i></div>
                         </div>
                         <div class="overview-card">
                             <div class="title">This Week</div>
-                            <div class="amount">${weekRevenue}</div>
-                            <div class="period">Last 7 days</div>
+                            <div class="icon"><i class="fas fa-calendar-week fa-2x"></i></div>
                         </div>
                     </div>
                 </div>

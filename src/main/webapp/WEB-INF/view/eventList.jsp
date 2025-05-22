@@ -182,18 +182,15 @@
                                 %>
                                 <i class="fas <%= categoryClass %>"></i>
                             </div>
-                            <p><%= category.getName().toUpperCase() %></p>
-                            <div class="event-count">
+                            <p><%= category.getName().toUpperCase() %></p>                            <div class="event-count">
                                 <% 
                                 int count = 0;
-                                if (filteredEvents != null && selectedCategoryId != null && selectedCategoryId == category.getCategoryId()) {
-                                    count = filteredEvents.size();
-                                } else {
-                                    // Estimate count - this would ideally come from your backend
-                                    count = 4 + (int)(Math.random() * 15);
+                                Map<Integer, Integer> categoryEventCounts = (Map<Integer, Integer>) request.getAttribute("categoryEventCounts");
+                                if (categoryEventCounts != null && categoryEventCounts.containsKey(category.getCategoryId())) {
+                                    count = categoryEventCounts.get(category.getCategoryId());
                                 }
                                 %>
-                                <%= count %> events
+                                <%= count %> event<%= count != 1 ? "s" : "" %>
                             </div>
                         </a>
                     <% 

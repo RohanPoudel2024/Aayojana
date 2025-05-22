@@ -1,0 +1,189 @@
+/* Booking ticket styles */
+.ticket-container {
+    max-width: 800px;
+    margin: 30px auto;
+    background-color: #fff;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    position: relative;
+}
+
+.ticket-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: var(--on-primary);
+    padding: 25px;
+    text-align: center;
+    position: relative;
+}
+
+.ticket-header h1 {
+    margin-bottom: 5px;
+    font-size: 28px;
+}
+
+.ticket-header h2 {
+    font-weight: 500;
+    opacity: 0.9;
+    margin-bottom: 0;
+    font-size: 18px;
+}
+
+.ticket-body {
+    padding: 30px;
+}
+
+.ticket-event-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--on-background);
+}
+
+.ticket-event-description {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.ticket-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.ticket-detail-item {
+    border-radius: var(--border-radius-sm);
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+.ticket-detail-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.ticket-detail-value {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--on-background);
+}
+
+.ticket-qr {
+    margin: 20px auto;
+    width: 150px;
+    height: 150px;
+    background-color: #f1f1f1;
+    border: 1px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+}
+
+.ticket-footer {
+    border-top: 1px solid #eee;
+    padding: 20px 30px;
+    text-align: center;
+    background-color: #f9f9f9;
+    font-size: 14px;
+    color: #666;
+}
+
+.ticket-validation {
+    font-size: 12px;
+    color: #888;
+    margin-top: 10px;
+}
+
+.ticket-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    gap: 15px;
+}
+
+.ticket-download-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(98, 0, 238, 0.25);
+    transition: all 0.3s ease;
+}
+
+.ticket-download-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(98, 0, 238, 0.35);
+}
+
+.ticket-download-button i {
+    margin-right: 8px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .ticket-container {
+        margin: 15px;
+    }
+    
+    .ticket-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .ticket-actions {
+        flex-direction: column;
+    }
+    
+    .ticket-download-button {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Ticket status badges */
+.ticket-status {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.ticket-status-confirmed {
+    background-color: rgba(0, 200, 83, 0.2);
+    color: #00c853;
+}
+
+.ticket-status-cancelled {
+    background-color: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+}
+
+/* Animation for ticket download */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.ticket-download-button:active {
+    animation: pulse 0.3s ease;
+}

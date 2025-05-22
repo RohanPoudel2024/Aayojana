@@ -17,6 +17,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 @WebServlet("/admin/financial-reports")
 public class FinancialReportsServlet extends HttpServlet {
@@ -73,6 +75,17 @@ public class FinancialReportsServlet extends HttpServlet {
             // Set the selected report type
             request.setAttribute("selectedReport", reportType);
             
+            // Add debugging information
+            try {
+                int bookingsCount = reportsDAO.getBookingsCount();
+                String schemaInfo = reportsDAO.checkDatabaseSchema();
+                request.setAttribute("bookingsCount", bookingsCount);
+                request.setAttribute("debugInfo", "Total bookings in database: " + bookingsCount + 
+                                     "\nDatabase schema info: " + schemaInfo);
+            } catch (Exception e) {
+                request.setAttribute("debugInfo", "Error getting bookings count: " + e.getMessage());
+            }
+            
             // Forward to the financial reports page
             request.getRequestDispatcher("/WEB-INF/view/admin/financialReports.jsp").forward(request, response);
             
@@ -84,35 +97,93 @@ public class FinancialReportsServlet extends HttpServlet {
         }
     }
     
-    private void prepareOverviewReport(HttpServletRequest request) throws SQLException {
-        // Get revenue overview
-        Map<String, Double> revenueOverview = reportsDAO.getRevenueOverview();
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
         
-        // Format currency values
-        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("en", "NP"));
+        HttpSession session = request.getSession();
+        User currentUser = (User) session.getAttribute("currentUser");
         
-        for (Map.Entry<String, Double> entry : revenueOverview.entrySet()) {
-            String key = entry.getKey() + "Revenue";
-            Double value = entry.getValue() != null ? entry.getValue() : 0.0;
-            String formattedValue = currencyFormatter.format(value).replace("NPR", "NPR. ");
-            request.setAttribute(key, formattedValue);
+        // Check if user is authenticated and has admin privileges
+        if (currentUser == null || !"admin".equals(currentUser.getRole())) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
         }
         
-        // Get monthly revenue for chart
-        Map<String, Double> monthlyRevenue = reportsDAO.getMonthlyRevenue();
-        request.setAttribute("monthlyRevenueData", monthlyRevenue);
-        
-        // Get top 5 events by revenue
-        List<Map<String, Object>> topEvents = reportsDAO.getTopEventsByRevenue();
-        request.setAttribute("topEvents", topEvents);
-        
-        // Get category breakdown
-        Map<String, Double> categoryRevenue = reportsDAO.getRevenueByCategoryChart();
-        request.setAttribute("categoryRevenueData", categoryRevenue);
-        
-        // Get recent transactions
-        List<Map<String, Object>> recentTransactions = reportsDAO.getRecentTransactions(5);
-        request.setAttribute("recentTransactions", recentTransactions);
+        // Check if this is a request to add sample data
+        String action = request.getParameter("action");
+        if ("addSampleData".equals(action)) {
+            try {
+                boolean dataAdded = reportsDAO.addSampleBookingsData();
+                request.setAttribute("dataSampleAdded", dataAdded);
+                
+                // Proceed to show the reports page
+                doGet(request, response);
+            } catch (SQLException e) {
+                getServletContext().log("Error adding sample data", e);
+                request.setAttribute("errorMessage", "Failed to add sample data: " + e.getMessage());
+                request.getRequestDispatcher("/WEB-INF/view/error.jsp").forward(request, response);
+            }
+        } else {
+            // For any other POST actions, redirect to GET
+            response.sendRedirect(request.getContextPath() + "/admin/financial-reports");
+        }
+    }
+    
+    private void prepareOverviewReport(HttpServletRequest request) throws SQLException {
+        try {
+            // Get revenue overview
+            Map<String, Double> revenueOverview = reportsDAO.getRevenueOverview();
+            
+            // Format currency values
+            NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("en", "NP"));
+            
+            for (Map.Entry<String, Double> entry : revenueOverview.entrySet()) {
+                String key = entry.getKey() + "Revenue";
+                Double value = entry.getValue() != null ? entry.getValue() : 0.0;
+                String formattedValue = currencyFormatter.format(value).replace("NPR", "NPR. ");
+                request.setAttribute(key, formattedValue);
+            }
+            
+            // Set default values if not present
+            if (!request.getAttributeNames().hasMoreElements()) {
+                request.setAttribute("totalRevenue", "NPR. 0.00");
+                request.setAttribute("yearRevenue", "NPR. 0.00");
+                request.setAttribute("monthRevenue", "NPR. 0.00");
+                request.setAttribute("weekRevenue", "NPR. 0.00");
+            }
+            
+            // Get monthly revenue for chart
+            Map<String, Double> monthlyRevenue = reportsDAO.getMonthlyRevenue();
+            request.setAttribute("monthlyRevenueData", monthlyRevenue);
+            
+            // Get top 5 events by revenue
+            List<Map<String, Object>> topEvents = reportsDAO.getTopEventsByRevenue();
+            request.setAttribute("topEvents", topEvents);
+            
+            // Get category breakdown
+            Map<String, Double> categoryRevenue = reportsDAO.getRevenueByCategoryChart();
+            request.setAttribute("categoryRevenueData", categoryRevenue);
+            
+            // Get recent transactions
+            List<Map<String, Object>> recentTransactions = reportsDAO.getRecentTransactions(5);
+            request.setAttribute("recentTransactions", recentTransactions);
+            
+        } catch (Exception e) {
+            // Log the error
+            getServletContext().log("Error preparing overview report", e);
+            
+            // Set default values
+            request.setAttribute("totalRevenue", "NPR. 0.00");
+            request.setAttribute("yearRevenue", "NPR. 0.00");
+            request.setAttribute("monthRevenue", "NPR. 0.00");
+            request.setAttribute("weekRevenue", "NPR. 0.00");
+            request.setAttribute("monthlyRevenueData", new HashMap<String, Double>());
+            request.setAttribute("categoryRevenueData", new HashMap<String, Double>());
+            request.setAttribute("topEvents", new ArrayList<>());
+            request.setAttribute("recentTransactions", new ArrayList<>());
+            request.setAttribute("errorInfo", "Error: " + e.getMessage());
+        }
     }
     
     private void prepareMonthlyReport(HttpServletRequest request) throws SQLException {

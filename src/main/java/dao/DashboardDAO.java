@@ -12,9 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DashboardDAO {
-    
-    public int countTotalBookings() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM bookings WHERE status != 'CANCELLED'";
+      public int countTotalBookings() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM bookings";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -27,9 +26,8 @@ public class DashboardDAO {
         
         return 0;
     }
-    
-    public double calculateTotalRevenue() throws SQLException {
-        String sql = "SELECT SUM(total_price) FROM bookings WHERE status != 'CANCELLED'";
+      public double calculateTotalRevenue() throws SQLException {
+        String sql = "SELECT SUM(total_price) FROM bookings";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -57,31 +55,31 @@ public class DashboardDAO {
         
         return 0;
     }
-    
-    public List<DashboardActivity> getRecentActivities() throws SQLException {
-        List<DashboardActivity> activities = new ArrayList<>();
-        
-        // Get recent bookings
+      public List<DashboardActivity> getRecentActivities() throws SQLException {
+        List<DashboardActivity> activities = new ArrayList<>();        // Get recent bookings
         String bookingsSql = 
-            "SELECT 'booking' as type, b.id, u.name as user_name, e.title as event_title, " +
-            "b.booking_date, b.seats_booked, b.created_at " +
+            "SELECT 'booking' as type, b.booking_id as id, u.name as user_name, e.title as event_title, " +
+            "b.booking_date, b.seats_booked " +
             "FROM bookings b " +
-            "JOIN users u ON b.user_id = u.id " +
-            "JOIN events e ON b.event_id = e.id " +
-            "WHERE b.status != 'CANCELLED' " +
-            "ORDER BY b.created_at DESC LIMIT 3";
+            "JOIN user u ON b.user_id = u.user_id " +
+            "JOIN event e ON b.event_id = e.event_id " +
+            "ORDER BY b.booking_date DESC LIMIT 3";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement stmt = conn.prepareStatement(bookingsSql);
              ResultSet rs = stmt.executeQuery()) {
-            
-            while (rs.next()) {
+              while (rs.next()) {
                 String type = rs.getString("type");
                 int id = rs.getInt("id");
                 String userName = rs.getString("user_name");
                 String eventTitle = rs.getString("event_title");
                 int seatsBooked = rs.getInt("seats_booked");
-                Timestamp createdAt = rs.getTimestamp("created_at");
+                
+                // Get the booking_date and convert it to a timestamp
+                java.sql.Date bookingDate = rs.getDate("booking_date");
+                Timestamp createdAt = bookingDate != null ? 
+                    new Timestamp(bookingDate.getTime()) : 
+                    new Timestamp(System.currentTimeMillis());
                 
                 String title = "New booking";
                 String description = userName + " booked " + seatsBooked + 
@@ -90,47 +88,45 @@ public class DashboardDAO {
                 
                 activities.add(new DashboardActivity(type, id, title, description, createdAt));
             }
-        }
-        
-        // Get recent user registrations
+        }        // Get recent user registrations
         String usersSql = 
-            "SELECT 'user' as type, id, name, email, created_at " +
-            "FROM users " +
-            "ORDER BY created_at DESC LIMIT 3";
+            "SELECT 'user' as type, user_id as id, name, email " +
+            "FROM user " +
+            "ORDER BY user_id DESC LIMIT 3";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement stmt = conn.prepareStatement(usersSql);
              ResultSet rs = stmt.executeQuery()) {
-            
-            while (rs.next()) {
+              while (rs.next()) {
                 String type = rs.getString("type");
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                Timestamp createdAt = rs.getTimestamp("created_at");
+                
+                // Create a timestamp for right now since we don't have created_at
+                Timestamp createdAt = new Timestamp(System.currentTimeMillis());
                 
                 String title = "New user registered";
                 String description = name + " joined the platform";
                 
                 activities.add(new DashboardActivity(type, id, title, description, createdAt));
             }
-        }
-        
-        // Get recent events
+        }        // Get recent events
         String eventsSql = 
-            "SELECT 'event' as type, id, title, location, created_at " +
-            "FROM events " +
-            "ORDER BY created_at DESC LIMIT 2";
+            "SELECT 'event' as type, event_id as id, title, location " +
+            "FROM event " +
+            "ORDER BY event_id DESC LIMIT 2";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement stmt = conn.prepareStatement(eventsSql);
              ResultSet rs = stmt.executeQuery()) {
-            
-            while (rs.next()) {
+              while (rs.next()) {
                 String type = rs.getString("type");
                 int id = rs.getInt("id");
                 String title = rs.getString("title");
                 String location = rs.getString("location");
-                Timestamp createdAt = rs.getTimestamp("created_at");
+                
+                // Create a timestamp for right now since we don't have created_at
+                Timestamp createdAt = new Timestamp(System.currentTimeMillis());
                 
                 String activityTitle = "New event created";
                 String description = title + " at " + location;

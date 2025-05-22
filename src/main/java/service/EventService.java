@@ -263,7 +263,8 @@ public class EventService {
         
         return result.toByteArray();
     }
-        public List<Event> getEventsByCategory(int categoryId, int limit, int excludeEventId) {
+    
+    public List<Event> getEventsByCategory(int categoryId, int limit, int excludeEventId) {
         try {
             // Get all events
             List<Event> allEvents = getAllEvents();
@@ -293,6 +294,18 @@ public class EventService {
             e.printStackTrace();
             // Return empty list if there's an error
             return List.of();
+        }
+    }
+      public int getEventCountByCategory(int categoryId) {
+        try {
+            System.out.println("DEBUG: EventService.getEventCountByCategory called for categoryId = " + categoryId);
+            int count = eventsDAO.getEventCountByCategory(categoryId);
+            System.out.println("DEBUG: EventService.getEventCountByCategory returned " + count + " for categoryId = " + categoryId);
+            return count;
+        } catch (SQLException e) {
+            System.out.println("DEBUG: Error in getEventCountByCategory: " + e.getMessage());
+            e.printStackTrace();
+            return 0;
         }
     }
 }

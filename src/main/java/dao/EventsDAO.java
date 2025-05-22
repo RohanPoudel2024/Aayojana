@@ -11,7 +11,7 @@ public class EventsDAO {
     
     public List<Event> getAllEvents() throws SQLException {
         List<Event> events = new ArrayList<>();
-        String sql = "SELECT * FROM events ORDER BY date DESC";
+        String sql = "SELECT * FROM event ORDER BY date DESC";
         
         try (Connection conn = DBUtils.getConnection();
              Statement stmt = conn.createStatement();
@@ -26,7 +26,7 @@ public class EventsDAO {
         return events;
     }
     public Event getEventById(int eventId) throws SQLException {
-        String sql = "SELECT * FROM events WHERE id = ?";
+        String sql = "SELECT * FROM event WHERE event_id = ?";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -44,7 +44,7 @@ public class EventsDAO {
     }
     
     public boolean createEvent(Event event) throws SQLException {
-        String sql = "INSERT INTO events (title, location, date, time, available_seats, price, category_id, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO event (title, location, date, time, available_seats, price, category_id, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -78,8 +78,8 @@ public class EventsDAO {
         
         return false;
     }
-      public boolean updateEvent(Event event) throws SQLException {
-        String sql = "UPDATE events SET title = ?, location = ?, date = ?, time = ?, available_seats = ?, price = ?, category_id = ?, image = ? WHERE id = ?";
+    public boolean updateEvent(Event event) throws SQLException {
+        String sql = "UPDATE event SET title = ?, location = ?, date = ?, time = ?, available_seats = ?, price = ?, category_id = ?, image = ? WHERE event_id = ?";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -110,9 +110,8 @@ public class EventsDAO {
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
         }
-    }
-      public boolean deleteEvent(int eventId) throws SQLException {
-        String sql = "DELETE FROM events WHERE id = ?";
+    }      public boolean deleteEvent(int eventId) throws SQLException {
+        String sql = "DELETE FROM event WHERE event_id = ?";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -140,10 +139,9 @@ public class EventsDAO {
         
         return event;
     }
-    
-    public List<Event> searchEvents(String keyword) throws SQLException {
+      public List<Event> searchEvents(String keyword) throws SQLException {
         List<Event> events = new ArrayList<>();
-        String sql = "SELECT * FROM events WHERE title LIKE ? OR location LIKE ?";
+        String sql = "SELECT * FROM event WHERE title LIKE ? OR location LIKE ?";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -161,10 +159,8 @@ public class EventsDAO {
         }
         
         return events;
-    }
-
-    public int countTotalEvents() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM events";
+    }    public int countTotalEvents() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM event";
         
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -174,7 +170,29 @@ public class EventsDAO {
                 return rs.getInt(1);
             }
         }
+        return 0;
+    }    public int getEventCountByCategory(int categoryId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM event WHERE category_id = ?";
+        System.out.println("DEBUG: Executing SQL query: " + sql + " with categoryId = " + categoryId);
         
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, categoryId);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    System.out.println("DEBUG: Event count for category " + categoryId + " = " + count);
+                    return count;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("DEBUG: SQLException in getEventCountByCategory: " + e.getMessage());
+            throw e;
+        }
+        
+        System.out.println("DEBUG: No results found for category " + categoryId);
         return 0;
     }
 }
