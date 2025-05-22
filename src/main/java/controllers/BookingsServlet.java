@@ -54,8 +54,7 @@ public class BookingsServlet extends HttpServlet {
             listUserBookings(request, response, currentUser.getUserId());
         }
     }
-    
-    @Override
+      @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Get current user from session
         HttpSession session = request.getSession();
@@ -68,6 +67,43 @@ public class BookingsServlet extends HttpServlet {
             return;
         }
 
+        // Check if this is a booking cancellation
+        String action = request.getParameter("action");
+        if (action != null && action.equals("cancel")) {
+            // This is a cancellation request
+            String bookingIdStr = request.getParameter("bookingId");
+            if (bookingIdStr != null && !bookingIdStr.isEmpty()) {
+                try {
+                    int bookingId = Integer.parseInt(bookingIdStr);
+                    Booking booking = bookingService.getBookingById(bookingId);
+                    
+                    // Check if booking exists and belongs to the current user
+                    if (booking != null && booking.getUserId() == currentUser.getUserId()) {
+                        boolean cancelled = bookingService.cancelBooking(bookingId);
+                        if (cancelled) {
+                            session.setAttribute("message", "Your booking has been cancelled successfully.");
+                        } else {
+                            session.setAttribute("errorMessage", "Failed to cancel booking. Please try again.");
+                        }
+                    } else {
+                        session.setAttribute("errorMessage", "You don't have permission to cancel this booking.");
+                    }
+                } catch (NumberFormatException e) {
+                    session.setAttribute("errorMessage", "Invalid booking ID.");
+                }
+                
+                // Redirect to the appropriate page
+                String redirectUrl = request.getParameter("returnUrl");
+                if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                    response.sendRedirect(redirectUrl);
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/booking?action=list");
+                }
+                return;
+            }
+        }
+
+        // This is a normal booking creation
         String eventIdStr = request.getParameter("eventId");
         String seatsStr = request.getParameter("seats");
         
@@ -95,6 +131,7 @@ public class BookingsServlet extends HttpServlet {
             booking.setEventId(eventId);
             booking.setBookingDate(Date.valueOf(LocalDate.now()));
             booking.setSeatsBooked(seats);
+            booking.setStatus("CONFIRMED"); // Set initial status
             
             Event event = eventService.getEventById(eventId);
             if (event == null) {
@@ -242,6 +279,7 @@ public class BookingsServlet extends HttpServlet {
             booking.setEventId(eventId);
             booking.setBookingDate(Date.valueOf(LocalDate.now()));
             booking.setSeatsBooked(seats);
+            booking.setStatus("CONFIRMED"); // Set initial status
             
             Event event = eventService.getEventById(eventId);
             if (event == null) {

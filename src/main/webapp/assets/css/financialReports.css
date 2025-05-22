@@ -1,0 +1,137 @@
+/* Financial Reports CSS */
+.status-confirmed {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.status-cancelled {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.report-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.report-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.report-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.report-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.report-description {
+    font-size: 13px;
+    color: #888;
+}
+
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    gap: 15px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #555;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+    border-radius: 2px;
+}
+
+.report-filter {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.filter-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.filter-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.filter-btn {
+    padding: 8px 16px;
+    background-color: #4a00e0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.filter-btn:hover {
+    background-color: #3900b3;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 250px;
+    }
+    
+    .report-value {
+        font-size: 20px;
+    }
+}

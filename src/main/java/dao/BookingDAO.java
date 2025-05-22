@@ -27,15 +27,14 @@ public class BookingDAO {
         } catch (SQLException e) {
             System.out.println("Error checking connection validity: " + e.getMessage());
             return -1;
-        }
-
-        String sql = "INSERT INTO bookings (user_id, event_id, booking_date, seats_booked, total_price) VALUES (?, ?, ?, ?, ?)";
+        }        String sql = "INSERT INTO bookings (user_id, event_id, booking_date, seats_booked, total_price, status) VALUES (?, ?, ?, ?, ?, ?)";
         System.out.println("SQL: " + sql);
         System.out.println("Values: user_id=" + booking.getUserId() + 
                           ", event_id=" + booking.getEventId() + 
                           ", booking_date=" + booking.getBookingDate() + 
                           ", seats=" + booking.getSeatsBooked() + 
-                          ", price=" + booking.getTotalPrice());
+                          ", price=" + booking.getTotalPrice() +
+                          ", status=" + (booking.getStatus() != null ? booking.getStatus() : "CONFIRMED"));
         
         try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setInt(1, booking.getUserId());
@@ -43,6 +42,7 @@ public class BookingDAO {
             statement.setDate(3, booking.getBookingDate());
             statement.setInt(4, booking.getSeatsBooked());
             statement.setDouble(5, booking.getTotalPrice());
+            statement.setString(6, booking.getStatus() != null ? booking.getStatus() : "CONFIRMED");
             
             int affectedRows = statement.executeUpdate();
             
@@ -86,14 +86,12 @@ public class BookingDAO {
             e.printStackTrace();
             return false;
         }
-    }
-
-    public boolean cancelBooking(int bookingId, int eventId, int seatsBooked) {        
+    }    public boolean cancelBooking(int bookingId, int eventId, int seatsBooked) {        
         // First update the available seats in the event
         String updateEventSql = "UPDATE events SET available_seats = available_seats + ? WHERE id = ?";
         
-        // Then mark the booking as cancelled
-        String cancelBookingSql = "DELETE FROM bookings WHERE booking_id = ?";
+        // Update booking status to "cancelled" instead of deleting
+        String updateBookingSql = "UPDATE bookings SET status = 'CANCELLED' WHERE id = ?";
         
         try {
             // Start transaction
@@ -106,8 +104,8 @@ public class BookingDAO {
                 eventStmt.executeUpdate();
             }
             
-            // Cancel booking
-            try (PreparedStatement bookingStmt = connection.prepareStatement(cancelBookingSql)) {
+            // Update booking status
+            try (PreparedStatement bookingStmt = connection.prepareStatement(updateBookingSql)) {
                 bookingStmt.setInt(1, bookingId);
                 bookingStmt.executeUpdate();
             }
@@ -150,10 +148,8 @@ public class BookingDAO {
         }
         
         return bookings;
-    }
-    
-    public Booking getBookingById(int bookingId) {
-        String sql = "SELECT * FROM bookings WHERE booking_id = ?";
+    }    public Booking getBookingById(int bookingId) {
+        String sql = "SELECT * FROM bookings WHERE id = ?";
         
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -165,11 +161,25 @@ public class BookingDAO {
             resultSet.close();
             statement.close();
         } catch (SQLException e) {
+            // If first query fails, try with alternative column name
+            try {
+                String alternateSql = "SELECT * FROM bookings WHERE booking_id = ?";
+                PreparedStatement statement = connection.prepareStatement(alternateSql);
+                statement.setInt(1, bookingId);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    return mapBooking(resultSet);
+                }
+                resultSet.close();
+                statement.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
         }
         
         return null;
-    }    
+    }
     
     public List<Booking> getBookingsByEventId(int eventId) {
         List<Booking> bookings = new ArrayList<>();
@@ -208,16 +218,29 @@ public class BookingDAO {
         }
         
         return bookings;
-    }
-
-    private Booking mapBooking(ResultSet resultSet) throws SQLException {
+    }    private Booking mapBooking(ResultSet resultSet) throws SQLException {
         Booking booking = new Booking();
-        booking.setBookingId(resultSet.getInt("id"));  // Changed from "booking_id" to "id"
+        try {
+            booking.setBookingId(resultSet.getInt("booking_id"));
+        } catch (SQLException e) {
+            // Try alternative column name
+            booking.setBookingId(resultSet.getInt("id"));
+        }
         booking.setUserId(resultSet.getInt("user_id"));
         booking.setEventId(resultSet.getInt("event_id"));
         booking.setBookingDate(resultSet.getDate("booking_date"));
         booking.setSeatsBooked(resultSet.getInt("seats_booked"));
         booking.setTotalPrice(resultSet.getDouble("total_price"));
+        
+        // Set status if it exists
+        try {
+            String status = resultSet.getString("status");
+            booking.setStatus(status != null ? status : "CONFIRMED"); // Default to CONFIRMED if null
+        } catch (SQLException e) {
+            // Status column might not exist in older schema
+            booking.setStatus("CONFIRMED"); // Default status
+        }
+        
         return booking;
     }
 }

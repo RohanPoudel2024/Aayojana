@@ -5,26 +5,31 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import model.Event;
 import model.Category;
+import model.User;
+import model.Booking;
 import service.EventService;
 import service.CategoryService;
+import service.BookingService;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
 @WebServlet("/events/details")
-public class EventDetailsServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+public class EventDetailsServlet extends HttpServlet {    private static final long serialVersionUID = 1L;
     private EventService eventService;
     private CategoryService categoryService;
+    private BookingService bookingService;
     private static final Logger logger = Logger.getLogger(EventDetailsServlet.class.getName());
     
     @Override
     public void init() {
         eventService = new EventService();
         categoryService = new CategoryService();
+        bookingService = new BookingService();
     }
     
     @Override
@@ -51,9 +56,18 @@ public class EventDetailsServlet extends HttpServlet {
             
             // Get category of this event
             Category category = categoryService.getCategoryById(event.getCategoryId());
-            
-            // Get similar events (same category, exclude current)
+              // Get similar events (same category, exclude current)
             List<Event> similarEvents = eventService.getEventsByCategory(event.getCategoryId(), 3, event.getEventId());
+            
+            // Check if the current user has booked this event
+            HttpSession session = request.getSession();
+            User currentUser = (User) session.getAttribute("currentUser");
+            Booking userBooking = null;
+            
+            if (currentUser != null) {
+                userBooking = bookingService.getUserBookingForEvent(currentUser.getUserId(), eventId);
+                request.setAttribute("userBooking", userBooking);
+            }
             
             // Set attributes
             request.setAttribute("event", event);

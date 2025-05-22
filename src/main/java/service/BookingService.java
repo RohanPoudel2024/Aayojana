@@ -187,6 +187,17 @@ public class BookingService {
         return bookingDAO.getBookingsByUserId(userId);
     }
     
+    // Check if a user has booked a specific event
+    public Booking getUserBookingForEvent(int userId, int eventId) {
+        List<Booking> userBookings = bookingDAO.getBookingsByUserId(userId);
+        for (Booking booking : userBookings) {
+            if (booking.getEventId() == eventId) {
+                return booking;
+            }
+        }
+        return null;
+    }
+    
     public Booking getBookingById(int bookingId) {
         return bookingDAO.getBookingById(bookingId);
     }

@@ -1,0 +1,221 @@
+/* Responsive Design Fixes for Event Details Page */
+
+/* General responsive adjustments */
+@media (max-width: 1200px) {
+    .main-content {
+        padding: 1rem;
+    }
+    
+    .hero-section {
+        min-height: 60vh;
+    }
+    
+    .event-title {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .section {
+        padding: 2rem 1rem;
+    }
+    
+    .timing-location {
+        flex-direction: column;
+    }
+    
+    .info-card, .price-card {
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+    
+    .location-card {
+        max-width: 100%;
+    }
+    
+    .events-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .event-title {
+        font-size: 2.5rem;
+    }
+    
+    .event-description {
+        font-size: 1rem;
+    }
+    
+    .hero-cta {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .cta-content {
+        padding: 2rem 1.5rem;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 50vh;
+    }
+    
+    .event-title {
+        font-size: 2rem;
+    }
+    
+    .about-stats {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .stat {
+        width: 100%;
+    }
+    
+    .album-images {
+        grid-template-columns: 1fr;
+    }
+    
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .similar-events .event-item {
+        height: auto;
+    }
+    
+    .cta-section {
+        padding: 3rem 1rem;
+    }
+    
+    .cta-title {
+        font-size: 1.75rem;
+    }
+    
+    .floating-action-btn {
+        right: 1rem;
+        bottom: 1rem;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .fab-tooltip {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-content {
+        padding: 1.5rem 1rem;
+    }
+    
+    .event-date {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .about-details p {
+        font-size: 0.95rem;
+    }
+    
+    .info-card h3, .price-card h3 {
+        font-size: 1.2rem;
+    }
+    
+    .location-title {
+        font-size: 1.1rem;
+    }
+    
+    .location-address {
+        font-size: 0.85rem;
+    }
+    
+    .location-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .map-container {
+        height: 200px;
+    }
+    
+    .cta-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .cta-content p {
+        font-size: 0.95rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .hero-section {
+        height: auto;
+        min-height: auto;
+    }
+    
+    .hero-section::before,
+    .hero-particles,
+    .scroll-indicator,
+    .floating-action-btn,
+    .social-share,
+    .share-panel,
+    .hero-cta,
+    footer,
+    header {
+        display: none !important;
+    }
+    
+    .main-content {
+        display: block !important;
+    }
+    
+    .section {
+        page-break-inside: avoid;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+        padding: 1rem;
+    }
+    
+    body, .container {
+        background: white !important;
+        color: black !important;
+    }
+    
+    a {
+        text-decoration: none !important;
+        color: black !important;
+    }
+    
+    .map-container, .cta-section {
+        display: none !important;
+    }
+    
+    .event-title {
+        font-size: 24pt !important;
+        color: black !important;
+        -webkit-text-fill-color: black !important;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .lightbox {
+        background-color: rgba(0, 0, 0, 0.95) !important;
+    }
+    
+    .lightbox img {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+    }
+}

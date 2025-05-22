@@ -20,11 +20,13 @@
     </a>
     <a href="${pageContext.request.contextPath}/admin/bookings" class="<%= isCurrentPath(request, "/admin/bookings") ? "active" : "" %>">
         <span class="icon"><i class="fas fa-ticket-alt"></i></span>Bookings
-    </a>
-    <a href="${pageContext.request.contextPath}/admin/categories" class="<%= isCurrentPath(request, "/admin/categories") ? "active" : "" %>">
+    </a>    <a href="${pageContext.request.contextPath}/admin/categories" class="<%= isCurrentPath(request, "/admin/categories") ? "active" : "" %>">
         <span class="icon"><i class="fas fa-tags"></i></span>Categories
     </a>
-    <a href="#"><span class="icon"><i class="fas fa-cog"></i></span>Settings</a>    <div class="user-account">
+    <a href="${pageContext.request.contextPath}/admin/financial-reports" class="<%= isCurrentPath(request, "/admin/financial-reports") ? "active" : "" %>">
+        <span class="icon"><i class="fas fa-chart-line"></i></span>Reports
+    </a>
+    <a href="#"><span class="icon"><i class="fas fa-cog"></i></span>Settings</a><div class="user-account">
         <a href="${pageContext.request.contextPath}/profile"><span class="icon"><i class="fas fa-user-circle"></i></span>User Account</a>
         <form action="${pageContext.request.contextPath}/logout" method="post">
             <button type="submit" style="background: none; border: none; color: #666; text-align: left; width: 100%; padding: 12px 0; cursor: pointer; display: flex; align-items: center;">

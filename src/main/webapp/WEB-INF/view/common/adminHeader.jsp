@@ -33,12 +33,14 @@
         </a>
         <a href="${pageContext.request.contextPath}/admin/bookings" class="<%= isCurrentPath(request, "/admin/bookings") ? "active" : "" %>">
             Bookings
-        </a>
-        <a href="${pageContext.request.contextPath}/admin/categories" class="<%= isCurrentPath(request, "/admin/categories") ? "active" : "" %>">
+        </a>        <a href="${pageContext.request.contextPath}/admin/categories" class="<%= isCurrentPath(request, "/admin/categories") ? "active" : "" %>">
             Categories
         </a>
         <a href="${pageContext.request.contextPath}/admin/users" class="<%= isCurrentPath(request, "/admin/users") ? "active" : "" %>">
             Users
+        </a>
+        <a href="${pageContext.request.contextPath}/admin/financial-reports" class="<%= isCurrentPath(request, "/admin/financial-reports") ? "active" : "" %>">
+            Reports
         </a>
     </div>
     <div class="user-actions">

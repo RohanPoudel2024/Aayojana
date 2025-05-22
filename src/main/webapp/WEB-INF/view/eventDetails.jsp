@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="model.Booking" %>
 <%@ page import="model.User" %>
 <%@ page import="model.Event" %>
 <%@ page import="model.Category" %>
@@ -6,11 +7,23 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.text.DecimalFormat" %>
 
-<%
-    User currentUser = (User) session.getAttribute("currentUser");
+<%    User currentUser = (User) session.getAttribute("currentUser");
     Event event = (Event) request.getAttribute("event");
     Category category = (Category) request.getAttribute("category");
     List<Event> similarEvents = (List<Event>) request.getAttribute("similarEvents");
+    Booking userBooking = (Booking) request.getAttribute("userBooking");
+    
+    // Get message from session if any
+    String message = (String) session.getAttribute("message");
+    String errorMessage = (String) session.getAttribute("errorMessage");
+    
+    // Clear session messages after reading them
+    if (message != null) {
+        session.removeAttribute("message");
+    }
+    if (errorMessage != null) {
+        session.removeAttribute("errorMessage");
+    }
     
     // Format dates and prices
     SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMMM d");
@@ -25,20 +38,22 @@
 %>
 
 <html>
-<head>
-    <title><%= event.getTitle() %> - AayoJana</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/eventDetails.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/heroSection.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/timingLocation.css">
+<head>    <title><%= event.getTitle() %> - AayoJana</title>    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/eventDetails.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/heroSection.css">    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/heroParallax.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/timingLocation.css">    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/interactiveMap.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/aboutEvent.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/eventGallery.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/similarEvents.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/ctaSection.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/floatingBtn.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/ctaSection.css">    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/floatingBtn.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/socialShare.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/components/messages.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/animations.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/pageTransitions.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/js/eventDetails.js"></script>
+    <script src="${pageContext.request.contextPath}/assets/js/bookingCancellation.js"></script>
 </head>
 <body>
 <div class="page-transition">
@@ -50,39 +65,111 @@
 
 <div class="container page-content">
     <jsp:include page="common/userHeader.jsp" />
-        </div>
-    </div>
-      <div class="hero-section animate-fadeIn">
-        <div class="event-card animate-scaleIn">
-            <div class="date animate-fadeInUp delay-200"><%= dateFormat.format(event.getDate()) %></div>
-            <h1 class="animate-fadeInUp delay-300"><%= event.getTitle() %></h1>
-            <p class="animate-fadeInUp delay-400"><%= event.getDescription() != null ? event.getDescription() : "Join us for this amazing event!" %></p>
-        </div>
-    </div>
     
-    <div class="main-content">
-        <div class="section timing-location animate-fadeInUp">
+    <div class="hero-section animate-fadeIn" style="background-image: url('<%= event.hasImage() ? request.getContextPath() + "/eventImage?eventId=" + event.getEventId() : request.getContextPath() + "/assets/images/event-default-bg.jpg" %>');">
+        <div id="hero-particles" class="hero-particles"></div>
+        <div class="hero-content">
+            <div class="event-date animate-fadeInUp delay-200">
+                <i class="fas fa-calendar-alt"></i> <%= dateFormat.format(event.getDate()) %>
+            </div>
+            <h1 class="event-title animate-fadeInUp delay-300"><%= event.getTitle() %></h1>
+            <p class="event-description animate-fadeInUp delay-400"><%= event.getDescription() != null ? (event.getDescription().length() > 150 ? event.getDescription().substring(0, 150) + "..." : event.getDescription()) : "Join us for this amazing event!" %></p>
+            
+            <div class="hero-cta">
+                <% if(currentUser != null) { %>
+                    <a href="${pageContext.request.contextPath}/booking?eventId=<%= event.getEventId() %>" class="hero-btn hero-btn-primary animate-fadeIn delay-500">
+                        <i class="fas fa-ticket-alt"></i> Book Now
+                    </a>
+                <% } else { %>
+                    <a href="${pageContext.request.contextPath}/login?redirect=events/details?id=<%= event.getEventId() %>" class="hero-btn hero-btn-primary animate-fadeIn delay-500">
+                        <i class="fas fa-sign-in-alt"></i> Login to Book
+                    </a>
+                <% } %>
+                <a href="#event-details" class="hero-btn hero-btn-secondary animate-fadeIn delay-600">
+                    <i class="fas fa-info-circle"></i> Event Details
+                </a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+      <div id="event-details" class="main-content">
+        <div class="section timing-location animate-fadeInUp" data-aos="fade-up">
             <h2>Timing and location</h2>
-            <div class="info-card animate-fadeInLeft delay-200">
+            <div class="location-card animate-fadeInLeft delay-200" data-aos="fade-right" data-aos-delay="200">
+                <div class="location-header">
+                    <div class="location-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3 class="location-title"><%= event.getLocation() %></h3>
+                </div>
+                <p class="location-address">
+                    <%= event.getLocation() %>
+                </p>
+                <div class="location-actions">
+                    <button class="location-btn location-btn-primary" onclick="showEventMap()">
+                        <i class="fas fa-map"></i> View Map
+                    </button>
+                    <a href="https://maps.google.com/?q=<%= java.net.URLEncoder.encode(event.getLocation(), "UTF-8") %>" target="_blank" class="location-btn location-btn-secondary">
+                        <i class="fas fa-directions"></i> Get Directions
+                    </a>
+                </div>
+            </div>
+            
+            <div class="info-card animate-fadeInLeft delay-300" data-aos="fade-right" data-aos-delay="300">
                 <h3>Date and Time</h3>
                 <p><span class="icon"><i class="fas fa-calendar"></i></span> <%= dateFormat.format(event.getDate()) %></p>
                 <p><span class="icon"><i class="fas fa-clock"></i></span> <%= event.getTime() %></p>
             </div>
-            <div class="info-card animate-fadeInLeft delay-300">
-                <h3>Place</h3>
-                <p><span class="icon"><i class="fas fa-map-marker-alt"></i></span> <%= event.getLocation() %></p>
+            
+            <div class="map-container" id="event-map" data-aos="zoom-in" data-aos-delay="400">
+                <div class="map-placeholder" onclick="showEventMap()">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>Interactive Map</h3>
+                    <p>Click to load the event location map</p>
+                </div>
             </div>
-            <div class="price-card animate-fadeInRight delay-400">
+            
+            <div class="price-card animate-fadeInRight delay-400" data-aos="fade-left" data-aos-delay="500">
                 <% if(event.getPrice() > 0) { %>
                     <p class="animate-pulse">NPR. <%= priceFormat.format(event.getPrice()) %> Ticket</p>
                 <% } else { %>
                     <div class="free-tag animate-pulse">FREE</div>
-                    <p>Free Entry</p>
-                <% } %>
+                    <p>Free Entry</p>                <% } %>
                 <p class="seats-info">Available Seats: <span class="seat-count animate-fadeIn delay-500"><%= event.getAvailableSeats() %></span></p>
-                <% if(currentUser != null) { %>
-                    <a href="${pageContext.request.contextPath}/booking?eventId=<%= event.getEventId() %>" class="btn btn-primary animate-fadeIn delay-700">Book Ticket</a>
-                <% } else { %>
+                
+                <% if(message != null && !message.isEmpty()) { %>
+                    <div class="success-message animate-fadeIn">
+                        <%= message %>
+                    </div>
+                <% } %>
+                
+                <% if(errorMessage != null && !errorMessage.isEmpty()) { %>
+                    <div class="error-message animate-fadeIn">
+                        <%= errorMessage %>
+                    </div>
+                <% } %>
+                  <% if(currentUser != null) { 
+                    if(userBooking != null) { %>
+                        <div class="booking-info animate-fadeIn">
+                            <p>You have booked <strong><%= userBooking.getSeatsBooked() %></strong> seats for this event.</p>
+                            <p>Status: <span class="booking-status <%= userBooking.getStatus() != null && userBooking.getStatus().equals("CANCELLED") ? "status-cancelled" : "status-confirmed" %>">
+                                <%= userBooking.getStatus() != null ? userBooking.getStatus() : "CONFIRMED" %>
+                            </span></p>
+                            <% if(userBooking.getStatus() == null || !userBooking.getStatus().equals("CANCELLED")) { %>
+                            <form action="${pageContext.request.contextPath}/booking" method="post" onsubmit="return confirm('Are you sure you want to cancel your booking?');">
+                                <input type="hidden" name="action" value="cancel">
+                                <input type="hidden" name="bookingId" value="<%= userBooking.getBookingId() %>">
+                                <input type="hidden" name="returnUrl" value="${pageContext.request.contextPath}/events/details?id=<%= event.getEventId() %>">
+                                <button type="submit" class="btn btn-danger animate-fadeIn">Cancel Booking</button>
+                            </form>
+                            <% } %>
+                        </div>
+                    <% } else { %>
+                        <a href="${pageContext.request.contextPath}/booking?eventId=<%= event.getEventId() %>" class="btn btn-primary animate-fadeIn delay-700">Book Ticket</a>
+                    <% }
+                } else { %>
                     <a href="${pageContext.request.contextPath}/login?redirect=events/details?id=<%= event.getEventId() %>" class="btn btn-primary animate-fadeIn delay-700">Login to Book</a>
                 <% } %>
             </div>
@@ -201,6 +288,47 @@
     <span class="fab-tooltip">Login to Book</span>
 </a>
 <% } %>
+
+<!-- Social Sharing Sidebar -->
+<div class="social-share">
+    <div class="share-btn" id="shareBtn">
+        <i class="fas fa-share-alt"></i>
+    </div>
+</div>
+
+<!-- Share Panel -->
+<div class="share-panel" id="sharePanel">
+    <div class="share-panel-content">
+        <div class="close-panel" id="closePanel">
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="share-panel-header">
+            <h3 class="share-panel-title">Share This Event</h3>
+            <p class="share-panel-desc">Help spread the word about <%= event.getTitle() %></p>
+        </div>
+        <div class="share-options">
+            <div class="share-option share-facebook" onclick="shareEvent('facebook')">
+                <i class="fab fa-facebook-f"></i>
+            </div>
+            <div class="share-option share-twitter" onclick="shareEvent('twitter')">
+                <i class="fab fa-twitter"></i>
+            </div>
+            <div class="share-option share-whatsapp" onclick="shareEvent('whatsapp')">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            <div class="share-option share-email" onclick="shareEvent('email')">
+                <i class="fas fa-envelope"></i>
+            </div>
+        </div>
+        <div class="copy-link">
+            <input type="text" class="copy-link-input" id="eventLink" value="${pageContext.request.scheme}://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/events/details?id=<%= event.getEventId() %>" readonly>
+            <button class="copy-link-button" id="copyLinkBtn">
+                <i class="fas fa-copy"></i> Copy
+            </button>
+        </div>
+        <div class="share-success" id="shareSuccess">Link copied to clipboard!</div>
+    </div>
+</div>
 
 <script>
     // Toggle like button
@@ -350,32 +478,25 @@
         });
     });
       // Create a lightbox for gallery images
-    function createLightbox(imgSrc, caption) {
-        // Create lightbox container
+    function createLightbox(imgSrc, caption) {        // Create lightbox container
         const lightbox = document.createElement('div');
         lightbox.className = 'lightbox animate-fadeIn';
-        lightbox.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 2rem;';
+        lightbox.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 2rem';
         
         // Create image container
         const imgContainer = document.createElement('div');
         imgContainer.style.cssText = 'position: relative; max-width: 90%; max-height: 80%;';
-        imgContainer.className = 'animate-scaleIn';
-        
-        // Create image
+        imgContainer.className = 'animate-scaleIn';        // Create image
         const img = document.createElement('img');
         img.src = imgSrc;
-        img.style.cssText = 'max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);';
-        
-        // Close button
+        img.style.cssText = 'max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3)';        // Close button
         const closeBtn = document.createElement('button');
         closeBtn.innerHTML = '&times;';
-        closeBtn.style.cssText = 'position: absolute; top: -20px; right: -20px; background-color: white; color: #18181b; border-radius: 50%; width: 40px; height: 40px; font-size: 24px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);';
-        
-        // Caption
+        closeBtn.style.cssText = 'position: absolute; top: -20px; right: -20px; background-color: white; color: #18181b; border-radius: 50%; width: 40px; height: 40px; font-size: 24px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)';        // Caption
         if (caption) {
             const captionElement = document.createElement('div');
             captionElement.textContent = caption;
-            captionElement.style.cssText = 'color: white; text-align: center; margin-top: 1rem; font-size: 1rem; font-weight: 500;';
+            captionElement.style.cssText = 'color: white; text-align: center; margin-top: 1rem; font-size: 1rem; font-weight: 500';
             imgContainer.appendChild(captionElement);
         }
         

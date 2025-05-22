@@ -162,4 +162,19 @@ public class EventsDAO {
         
         return events;
     }
+
+    public int countTotalEvents() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM events";
+        
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        
+        return 0;
+    }
 }

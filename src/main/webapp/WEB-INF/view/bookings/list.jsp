@@ -50,18 +50,24 @@
                             <div class="booking-details">
                                 <h2><%= event.getTitle() %></h2>
                                 <p><i class="fas fa-calendar"></i> <%= dateFormat.format(event.getDate()) %> | <%= event.getTime() %></p>
-                                <p><i class="fas fa-map-marker-alt"></i> <%= event.getLocation() %></p>
-                                <p><i class="fas fa-ticket-alt"></i> Seats Booked: <%= booking.getSeatsBooked() %></p>
+                                <p><i class="fas fa-map-marker-alt"></i> <%= event.getLocation() %></p>                                <p><i class="fas fa-ticket-alt"></i> Seats Booked: <%= booking.getSeatsBooked() %></p>
                                 <p><i class="fas fa-receipt"></i> Total Price: NPR <%= priceFormat.format(booking.getTotalPrice()) %></p>
                                 <p><i class="fas fa-clock"></i> Booked on: <%= dateFormat.format(booking.getBookingDate()) %></p>
+                                <p><i class="fas fa-info-circle"></i> Status: 
+                                    <span class="booking-status <%= booking.getStatus() != null && booking.getStatus().equals("CANCELLED") ? "status-cancelled" : "status-confirmed" %>">
+                                        <%= booking.getStatus() != null ? booking.getStatus() : "CONFIRMED" %>
+                                    </span>
+                                </p>
                             </div>
                             <div class="booking-actions">
                                 <a href="${pageContext.request.contextPath}/booking?action=view&bookingId=<%= booking.getBookingId() %>" class="btn btn-outline">View Details</a>
+                                <% if(booking.getStatus() == null || !booking.getStatus().equals("CANCELLED")) { %>
                                 <form action="${pageContext.request.contextPath}/booking" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
                                     <input type="hidden" name="action" value="cancel">
                                     <input type="hidden" name="bookingId" value="<%= booking.getBookingId() %>">
                                     <button type="submit" class="btn btn-danger">Cancel Booking</button>
                                 </form>
+                                <% } %>
                             </div>
                         </div>
                     <% 

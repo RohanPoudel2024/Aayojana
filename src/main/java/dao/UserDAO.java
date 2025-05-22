@@ -143,7 +143,9 @@ public class UserDAO {
             System.out.println("Error deleting user: " + e.getMessage());
             throw e;
         }
-    }    public User getUserById(int userId) throws SQLException {
+    }    
+    
+    public User getUserById(int userId) throws SQLException {
         String sql = "SELECT * FROM users WHERE id = ?";
         
         try (Connection conn = DBUtils.getConnection();
@@ -165,6 +167,60 @@ public class UserDAO {
             }
         }
         return null;
-
+    }
+      public boolean updateUser(User user) throws SQLException {
+        String sql = "UPDATE users SET name = ?, email = ?, role = ?, phone = ? WHERE id = ?";
+        
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, user.getName());
+            pstmt.setString(2, user.getEmail());
+            pstmt.setString(3, user.getRole());
+            pstmt.setString(4, user.getPhone());
+            pstmt.setInt(5, user.getUserId());
+            
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating user: " + e.getMessage());
+            throw e;
+        }
+    }
+    
+    public boolean updateUserWithPassword(User user) throws SQLException {
+        String sql = "UPDATE users SET name = ?, email = ?, role = ?, phone = ?, password = ? WHERE id = ?";
+        
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, user.getName());
+            pstmt.setString(2, user.getEmail());
+            pstmt.setString(3, user.getRole());
+            pstmt.setString(4, user.getPhone());
+            pstmt.setString(5, user.getPassword());
+            pstmt.setInt(6, user.getUserId());
+            
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.out.println("Error updating user with password: " + e.getMessage());
+            throw e;
+        }
+    }
+    
+    public int countTotalUsers() throws SQLException {
+        String query = "SELECT COUNT(*) FROM users";
+        
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        
+        return 0;
     }
 }

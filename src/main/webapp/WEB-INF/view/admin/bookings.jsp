@@ -170,13 +170,16 @@
                     <td>#<%= booking.getBookingId() %></td>
                     <td><%= event.getTitle() %></td>
                     <td><%= user.getName() %></td>
-                    <td><%= dateFormat.format(booking.getBookingDate()) %></td>
-                    <td><%= booking.getSeatsBooked() %></td>
+                    <td><%= dateFormat.format(booking.getBookingDate()) %></td>                    <td><%= booking.getSeatsBooked() %></td>
                     <td>₹<%= priceFormat.format(booking.getTotalPrice()) %></td>
                     <td>
-                        <span class="status-badge status-active">Active</span>
+                        <% String status = booking.getStatus() != null ? booking.getStatus() : "CONFIRMED"; %>
+                        <span class="status-badge <%= status.equals("CANCELLED") ? "status-cancelled" : "status-active" %>">
+                            <%= status %>
+                        </span>
                     </td>
                     <td>
+                        <% if(!status.equals("CANCELLED")) { %>
                         <form action="${pageContext.request.contextPath}/admin/bookings" method="post" style="display: inline;">
                             <input type="hidden" name="action" value="cancel">
                             <input type="hidden" name="bookingId" value="<%= booking.getBookingId() %>">
@@ -185,6 +188,9 @@
                                 Cancel
                             </button>
                         </form>
+                        <% } else { %>
+                        <span class="action-btn" style="background-color: #f3f4f6; color: #6b7280;">Cancelled</span>
+                        <% } %>
                     </td>
                 </tr>
                 <% }} %>
