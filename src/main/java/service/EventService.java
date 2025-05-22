@@ -296,14 +296,11 @@ public class EventService {
             return List.of();
         }
     }
-      public int getEventCountByCategory(int categoryId) {
+    
+    public int getEventCountByCategory(int categoryId) {
         try {
-            System.out.println("DEBUG: EventService.getEventCountByCategory called for categoryId = " + categoryId);
-            int count = eventsDAO.getEventCountByCategory(categoryId);
-            System.out.println("DEBUG: EventService.getEventCountByCategory returned " + count + " for categoryId = " + categoryId);
-            return count;
+            return eventsDAO.getEventCountByCategory(categoryId);
         } catch (SQLException e) {
-            System.out.println("DEBUG: Error in getEventCountByCategory: " + e.getMessage());
             e.printStackTrace();
             return 0;
         }

@@ -26,21 +26,18 @@ public class EventsServlet extends HttpServlet {
         eventService = new EventService();
         categoryService = new CategoryService();
     }
-      @Override
+    
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {        // Get categories for the category grid
         List<Category> activeCategories = categoryService.getActiveCategories();
         request.setAttribute("categories", activeCategories);
-        
-        System.out.println("DEBUG: EventsServlet.doGet - Loading categories and event counts");
         
         // Create a map of category IDs to event counts
         Map<Integer, Integer> categoryEventCounts = new HashMap<>();
         for (Category category : activeCategories) {
             int categoryId = category.getCategoryId();
-            System.out.println("DEBUG: Fetching event count for category: " + category.getName() + " (ID: " + categoryId + ")");
             int eventCount = eventService.getEventCountByCategory(categoryId);
             categoryEventCounts.put(categoryId, eventCount);
-            System.out.println("DEBUG: Category " + category.getName() + " (ID: " + categoryId + ") has " + eventCount + " events");
         }
         request.setAttribute("categoryEventCounts", categoryEventCounts);
         
