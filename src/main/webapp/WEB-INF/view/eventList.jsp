@@ -15,6 +15,17 @@
     List<Category> categories = (List<Category>) request.getAttribute("categories");
     List<Event> filteredEvents = (List<Event>) request.getAttribute("filteredEvents");
     Integer selectedCategoryId = (Integer) request.getAttribute("selectedCategoryId");
+    List<Event> allEvents = (List<Event>) request.getAttribute("allEvents");
+    Boolean isUpcomingView = (Boolean) request.getAttribute("isUpcomingView");
+    String pageTitle = (String) request.getAttribute("pageTitle");
+    
+    if (isUpcomingView == null) {
+        isUpcomingView = false;
+    }
+    
+    if (pageTitle == null) {
+        pageTitle = "Search Events";
+    }
     
     SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMMM d");
     SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
@@ -25,7 +36,7 @@
 %>
 <html>
 <head>
-    <title>Search Events - AayoJana</title>
+    <title><%= pageTitle %> - AayoJana</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/eventList.css">
@@ -34,17 +45,24 @@
 <body>
 <div class="container">
     <jsp:include page="common/userHeader.jsp" />
-    
-    <div class="hero-section">
+      <div class="hero-section">
         <div class="hero-content">
-            <h1>Discover Amazing Events</h1>
-            <h2>Find Your Next Experience & Create Memories</h2>
+            <% if (isUpcomingView) { %>
+                <h1>Upcoming Events</h1>
+                <h2>Discover What's Coming Up Soon</h2>
+            <% } else { %>
+                <h1>Discover Amazing Events</h1>
+                <h2>Find Your Next Experience & Create Memories</h2>
+            <% } %>
             <form action="${pageContext.request.contextPath}/EventsServlet" method="get" class="search-form">
+                <% if (isUpcomingView) { %>
+                    <input type="hidden" name="view" value="upcoming">
+                <% } %>
                 <div class="search-inputs">
                     <input type="text" name="keyword" placeholder="Search events by name, location or category...">
                     <div class="search-actions">
                         <button type="submit"><i class="fas fa-search"></i> Find Events</button>
-                        <button type="button" onclick="window.location.href='${pageContext.request.contextPath}/EventsServlet'">
+                        <button type="button" onclick="window.location.href='${pageContext.request.contextPath}/EventsServlet<%= isUpcomingView ? "?view=upcoming" : "" %>'">
                             <i class="fas fa-th-large"></i> Browse All
                         </button>
                     </div>
@@ -54,8 +72,7 @@
     </div>
     
     <div class="main-content">
-        <!-- Display filtered events if a category is selected -->
-        <% if (filteredEvents != null && selectedCategoryId != null) { 
+        <!-- Display filtered events if a category is selected -->        <% if (filteredEvents != null && selectedCategoryId != null) { 
             String categoryName = "";
             for (Category cat : categories) {
                 if (cat.getCategoryId() == selectedCategoryId) {
@@ -63,10 +80,15 @@
                     break;
                 }
             }
+            
+            String viewUrlParam = (String) request.getAttribute("viewUrlParam");
+            if (viewUrlParam == null) {
+                viewUrlParam = "";
+            }
         %>
             <div class="section">
                 <h2><%= categoryName.toUpperCase() %> EVENTS</h2>
-                <a href="${pageContext.request.contextPath}/EventsServlet" class="clear-filter">× Clear filter</a>
+                <a href="${pageContext.request.contextPath}/EventsServlet<%= isUpcomingView ? "?view=upcoming" : "" %>" class="clear-filter">× Clear filter</a>
                 <div class="events-grid">
                     <% if (filteredEvents.isEmpty()) { %>
                         <%= noEventsMessage %>
@@ -110,8 +132,97 @@
                     } %>
                 </div>
             </div>
-        <% } else { %>
-            <!-- Regular event display when no category is selected -->
+        <% } else if (isUpcomingView && (allEvents == null || allEvents.isEmpty())) { %>
+            <div class="section">
+                <h2>UPCOMING EVENTS</h2>
+                <div class="events-grid">
+                    <%= noEventsMessage %>
+                </div>
+            </div>
+        <% } else if (isUpcomingView) { %>
+            <div class="section">
+                <h2>UPCOMING EVENTS</h2>
+                <div class="events-grid">
+                    <% for (Event event : allEvents) { %>
+                        <div class="event-item">
+                            <a href="${pageContext.request.contextPath}/events/details?id=<%= event.getEventId() %>">
+                                <% if (event.hasImage()) { %>
+                                    <div class="image-wrapper">
+                                        <div class="loading-overlay">
+                                            <i class="fas fa-circle-notch fa-spin"></i>
+                                        </div>
+                                        <img src="${pageContext.request.contextPath}/eventImage?eventId=<%= event.getEventId() %>" 
+                                             alt="<%= event.getTitle() %>" class="event-image"
+                                             onload="this.parentNode.classList.add('loaded')">
+                                    </div>
+                                <% } else { %>
+                                    <div class="image-placeholder">
+                                        <i class="fas fa-images"></i>
+                                        <span>No Image Available</span>
+                                    </div>
+                                <% } %>
+                                <div class="like"><i class="far fa-heart"></i></div>
+                                <h3><%= event.getTitle() %></h3>
+                                <p class="event-info"><span class="icon"><i class="fas fa-calendar"></i></span> <%= dateFormat.format(event.getDate()) %> | <%= event.getTime() %></p>
+                                <p class="event-info"><span class="icon"><i class="fas fa-map-marker-alt"></i></span> <%= event.getLocation() %></p>
+                                <p class="event-price <%= event.getPrice() <= 0 ? "free" : "" %>">
+                                    <% if(event.getPrice() > 0) { %>
+                                        From NPR. <%= priceFormat.format(event.getPrice()) %>
+                                        <span class="event-tag">Paid</span>
+                                    <% } else { %>
+                                        Free entry
+                                        <span class="event-tag">Free</span>
+                                    <% } %>
+                                </p>
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>EXPLORE BY CATEGORY</h2>
+                <div class="category-grid">
+                    <% if (categories == null || categories.isEmpty()) { %>
+                        <div>No categories available</div>
+                    <% } else { 
+                        for (Category category : categories) { 
+                            if (category.isActive()) {
+                    %>
+                        <a href="${pageContext.request.contextPath}/EventsServlet?view=upcoming&category=<%= category.getCategoryId() %>" 
+                           class="category-item <%= (selectedCategoryId != null && selectedCategoryId == category.getCategoryId()) ? "active" : "" %>">
+                            <div class="icon">
+                                <% String categoryClass = "fa-theater-masks"; // default icon
+                                   if (category.getName() != null) {
+                                       String catName = category.getName().toLowerCase();
+                                       if (catName.equals("music")) categoryClass = "fa-music";
+                                       else if (catName.equals("sport")) categoryClass = "fa-basketball-ball";
+                                       else if (catName.equals("exhibition")) categoryClass = "fa-palette";
+                                       else if (catName.equals("business")) categoryClass = "fa-briefcase";
+                                       else if (catName.equals("photography")) categoryClass = "fa-camera";
+                                   }
+                                %>
+                                <i class="fas <%= categoryClass %>"></i>
+                            </div>
+                            <p><%= category.getName().toUpperCase() %></p>
+                            <div class="event-count">
+                                <% 
+                                int count = 0;
+                                Map<Integer, Integer> categoryEventCounts = (Map<Integer, Integer>) request.getAttribute("categoryEventCounts");
+                                if (categoryEventCounts != null && categoryEventCounts.containsKey(category.getCategoryId())) {
+                                    count = categoryEventCounts.get(category.getCategoryId());
+                                }
+                                %>
+                                <%= count %> event<%= count != 1 ? "s" : "" %>
+                            </div>
+                        </a>
+                    <% 
+                            }
+                        }
+                    } %>                </div>
+            </div>
+        <% } else if (!isUpcomingView) { %>
+            <!-- Regular event display when no category is selected and not in upcoming view -->
             <div class="section">
                 <h2>NEW EVENTS</h2>
                 <div class="events-grid">
@@ -190,7 +301,7 @@
                                     count = categoryEventCounts.get(category.getCategoryId());
                                 }
                                 %>
-                                <%= count %> event<%= count != 1 ? "s" : "" %>
+                                <!-- <%= count %> event<%= count != 1 ? "s" : "" %> -->
                             </div>
                         </a>
                     <% 
@@ -243,10 +354,9 @@
                     <% 
                         }
                     } %>
-                </div>
-                <div class="view-more">
-                    <a href="${pageContext.request.contextPath}/events/upcoming">
-                        View more events <i class="fas fa-chevron-right"></i>
+                </div>                <div class="view-more">
+                    <a href="${pageContext.request.contextPath}/EventsServlet?view=upcoming">
+                        View more upcoming events <i class="fas fa-chevron-right"></i>
                     </a>
                 </div>
             </div>

@@ -7,6 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class EventsDAO {
     
     public List<Event> getAllEvents() throws SQLException {
@@ -163,6 +164,58 @@ public class EventsDAO {
         return events;
     }
 
+    public List<Event> searchEvents(String keyword, String location, String categoryIdStr) throws SQLException {
+        List<Event> events = new ArrayList<>();
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM events WHERE 1=1 ");
+        List<Object> params = new ArrayList<>();
+        
+        // Add keyword search if provided
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sqlBuilder.append("AND (title LIKE ? OR description LIKE ?) ");
+            String searchTerm = "%" + keyword.trim() + "%";
+            params.add(searchTerm);
+            params.add(searchTerm);
+        }
+        
+        // Add location search if provided
+        if (location != null && !location.trim().isEmpty()) {
+            sqlBuilder.append("AND location LIKE ? ");
+            params.add("%" + location.trim() + "%");
+        }
+        
+        // Add category filter if provided
+        if (categoryIdStr != null && !categoryIdStr.trim().isEmpty()) {
+            try {
+                int categoryId = Integer.parseInt(categoryIdStr.trim());
+                sqlBuilder.append("AND category_id = ? ");
+                params.add(categoryId);
+            } catch (NumberFormatException e) {
+                // Invalid category ID, ignore this filter
+            }
+        }
+        
+        // Add ordering by date (most recent first)
+        sqlBuilder.append("ORDER BY date DESC");
+        
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sqlBuilder.toString())) {
+            
+            // Set parameters
+            for (int i = 0; i < params.size(); i++) {
+                pstmt.setObject(i + 1, params.get(i));
+            }
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Event event = extractEventFromResultSet(rs);
+                    events.add(event);
+                }
+            }
+        }
+        
+        return events;
+    }
+
     public int countTotalEvents() throws SQLException {
         String sql = "SELECT COUNT(*) FROM events";
         
@@ -194,5 +247,23 @@ public class EventsDAO {
         }
         
         return 0;
+    }    /**
+     * Gets events with dates on or after the current date
+     */
+    public List<Event> getUpcomingEvents() throws SQLException {
+        List<Event> events = new ArrayList<>();
+        String sql = "SELECT * FROM events WHERE date >= CURRENT_DATE ORDER BY date ASC, time ASC";
+        
+        try (Connection conn = DBUtils.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                Event event = extractEventFromResultSet(rs);
+                events.add(event);
+            }
+        }
+        
+        return events;
     }
 }

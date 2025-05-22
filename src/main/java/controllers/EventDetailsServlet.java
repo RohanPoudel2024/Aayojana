@@ -58,8 +58,7 @@ public class EventDetailsServlet extends HttpServlet {    private static final l
             Category category = categoryService.getCategoryById(event.getCategoryId());
               // Get similar events (same category, exclude current)
             List<Event> similarEvents = eventService.getEventsByCategory(event.getCategoryId(), 3, event.getEventId());
-            
-            // Check if the current user has booked this event
+              // Check if the current user has booked this event
             HttpSession session = request.getSession();
             User currentUser = (User) session.getAttribute("currentUser");
             Booking userBooking = null;
@@ -67,6 +66,10 @@ public class EventDetailsServlet extends HttpServlet {    private static final l
             if (currentUser != null) {
                 userBooking = bookingService.getUserBookingForEvent(currentUser.getUserId(), eventId);
                 request.setAttribute("userBooking", userBooking);
+            } else {
+                // For non-logged in users, store the current URL for redirection after login
+                String redirectUrl = request.getRequestURI() + "?id=" + eventId;
+                session.setAttribute("redirectAfterLogin", redirectUrl);
             }
             
             // Set attributes

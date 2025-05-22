@@ -26,9 +26,13 @@ public class EventsServlet extends HttpServlet {
         eventService = new EventService();
         categoryService = new CategoryService();
     }
-    
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {        // Get categories for the category grid
+      @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Check for view type parameter
+        String viewType = request.getParameter("view");
+        boolean isUpcomingView = "upcoming".equals(viewType);
+        
+        // Get categories for the category grid
         List<Category> activeCategories = categoryService.getActiveCategories();
         request.setAttribute("categories", activeCategories);
         
@@ -41,10 +45,19 @@ public class EventsServlet extends HttpServlet {
         }
         request.setAttribute("categoryEventCounts", categoryEventCounts);
         
-        // Get all events
-        List<Event> allEvents = eventService.getAllEvents();
+        List<Event> allEvents;
         
-        // Featured events (most recent 3)
+        // If upcoming view is requested, get only upcoming events
+        if (isUpcomingView) {
+            allEvents = eventService.getUpcomingEvents();
+            request.setAttribute("isUpcomingView", true);
+            request.setAttribute("pageTitle", "Upcoming Events");
+        } else {
+            // Get all events (default view)
+            allEvents = eventService.getAllEvents();
+            request.setAttribute("pageTitle", "Explore Events");
+        }
+          // Featured events (most recent 3)
         List<Event> newEvents = allEvents.stream()
                 .limit(3)
                 .collect(Collectors.toList());
@@ -64,7 +77,14 @@ public class EventsServlet extends HttpServlet {
                 .limit(3)
                 .collect(Collectors.toList());
         
-        // Add to request attributes
+        // For upcoming view, adjust the display structure
+        if (isUpcomingView) {
+            // For upcoming view, use all events as the main list
+            // and skip the smaller sections
+            moreEvents = allEvents;
+            request.setAttribute("showAllEvents", true);
+        }
+          // Add to request attributes
         request.setAttribute("newEvents", newEvents);
         request.setAttribute("upcomingEvents", upcomingEvents);
         request.setAttribute("highlightEvent", highlightEvent);
@@ -81,6 +101,13 @@ public class EventsServlet extends HttpServlet {
                         .collect(Collectors.toList());
                 request.setAttribute("filteredEvents", filteredEvents);
                 request.setAttribute("selectedCategoryId", categoryId);
+                
+                // If we're in upcoming view, update the URL parameter
+                if (isUpcomingView) {
+                    request.setAttribute("viewUrlParam", "view=upcoming&");
+                } else {
+                    request.setAttribute("viewUrlParam", "");
+                }
             } catch (NumberFormatException e) {
                 // Invalid category parameter, ignore
             }

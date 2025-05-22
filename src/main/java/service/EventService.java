@@ -132,6 +132,15 @@ public class EventService {
             return List.of();
         }
     }
+
+    public List<Event> searchEvents(String keyword, String location, String categoryId) {
+        try {
+            return eventsDAO.searchEvents(keyword, location, categoryId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return List.of();
+        }
+    }
     
     
     public boolean validateEventData(String title, String location, String dateStr, 
@@ -303,6 +312,19 @@ public class EventService {
         } catch (SQLException e) {
             e.printStackTrace();
             return 0;
+        }
+    }
+
+    /**
+     * Gets a list of upcoming events (events with dates on or after the current date)
+     * @return List of upcoming events, ordered by date
+     */
+    public List<Event> getUpcomingEvents() {
+        try {
+            return eventsDAO.getUpcomingEvents();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return List.of(); 
         }
     }
 }

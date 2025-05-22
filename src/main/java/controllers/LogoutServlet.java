@@ -11,11 +11,15 @@ import java.io.IOException;
 
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        if(session!=null){
+        if(session != null){
             session.invalidate();
         }
-        request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request,response);
+        response.sendRedirect(request.getContextPath() + "/login");
     }
 }

@@ -56,7 +56,7 @@ public class DashboardDAO {
         return 0;
     }
       public List<DashboardActivity> getRecentActivities() throws SQLException {
-        List<DashboardActivity> activities = new ArrayList<>();        // Get recent bookings
+        List<DashboardActivity> activities = new ArrayList<>();        
         String bookingsSql = 
             "SELECT 'booking' as type, b.booking_id as id, u.name as user_name, e.title as event_title, " +
             "b.booking_date, b.seats_booked " +
@@ -75,7 +75,7 @@ public class DashboardDAO {
                 String eventTitle = rs.getString("event_title");
                 int seatsBooked = rs.getInt("seats_booked");
                 
-                // Get the booking_date and convert it to a timestamp
+                
                 java.sql.Date bookingDate = rs.getDate("booking_date");
                 Timestamp createdAt = bookingDate != null ? 
                     new Timestamp(bookingDate.getTime()) : 
@@ -88,7 +88,7 @@ public class DashboardDAO {
                 
                 activities.add(new DashboardActivity(type, id, title, description, createdAt));
             }
-        }        // Get recent user registrations
+        }        
         String usersSql = 
             "SELECT 'user' as type, user_id as id, name, email " +
             "FROM user " +
@@ -102,7 +102,7 @@ public class DashboardDAO {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 
-                // Create a timestamp for right now since we don't have created_at
+                
                 Timestamp createdAt = new Timestamp(System.currentTimeMillis());
                 
                 String title = "New user registered";
@@ -110,7 +110,7 @@ public class DashboardDAO {
                 
                 activities.add(new DashboardActivity(type, id, title, description, createdAt));
             }
-        }        // Get recent events
+        }        
         String eventsSql = 
             "SELECT 'event' as type, event_id as id, title, location " +
             "FROM event " +
@@ -125,7 +125,7 @@ public class DashboardDAO {
                 String title = rs.getString("title");
                 String location = rs.getString("location");
                 
-                // Create a timestamp for right now since we don't have created_at
+                
                 Timestamp createdAt = new Timestamp(System.currentTimeMillis());
                 
                 String activityTitle = "New event created";
@@ -135,17 +135,17 @@ public class DashboardDAO {
             }
         }
         
-        // If we have less than 5 activities, add a system activity
+        
         if (activities.size() < 5) {
             Timestamp yesterday = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
             activities.add(new DashboardActivity("system", 0, "System update", 
                           "System maintenance completed successfully", yesterday));
         }
         
-        // Sort activities by timestamp (newest first)
+        
         activities.sort((a1, a2) -> a2.getTimestamp().compareTo(a1.getTimestamp()));
         
-        // Return maximum 5 activities
+        
         return activities.size() > 5 ? activities.subList(0, 5) : activities;
     }
 }

@@ -49,8 +49,11 @@
                 <span class="username"><%= headerUser.getName() %></span>
                 <span class="icon"><i class="fas fa-user"></i></span>
             </a>
-            <form action="${pageContext.request.contextPath}/logout" method="post" style="display: inline;">
-                <button type="submit" class="logout-btn">Logout</button>
+            <form action="${pageContext.request.contextPath}/logout" method="post">
+                <button type="submit" class="logout-btn">
+                    <span class="icon"><i class="fas fa-sign-out-alt"></i></span>
+                    Logout
+                </button>
             </form>
         <% } %>
     </div>

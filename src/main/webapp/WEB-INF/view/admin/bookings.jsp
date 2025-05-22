@@ -171,7 +171,7 @@
                     <td><%= event.getTitle() %></td>
                     <td><%= user.getName() %></td>
                     <td><%= dateFormat.format(booking.getBookingDate()) %></td>                    <td><%= booking.getSeatsBooked() %></td>
-                    <td>₹<%= priceFormat.format(booking.getTotalPrice()) %></td>
+                    <td>NPR. <%= priceFormat.format(booking.getTotalPrice()) %></td>
                     <td>
                         <% String status = booking.getStatus() != null ? booking.getStatus() : "CONFIRMED"; %>
                         <span class="status-badge <%= status.equals("CANCELLED") ? "status-cancelled" : "status-active" %>">

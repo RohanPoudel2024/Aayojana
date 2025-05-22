@@ -16,11 +16,10 @@ import java.util.logging.Logger;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-    private static final Logger logger = Logger.getLogger(LoginServlet.class.getName());
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private static final Logger logger = Logger.getLogger(LoginServlet.class.getName());    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String redirect = request.getParameter("redirect");
         
         logger.info("Login attempt for email: " + email);
         
@@ -31,11 +30,23 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("currentUser", user);
                 logger.info("User logged in successfully. UserID: " + user.getUserId() + ", Name: " + user.getName());
                 
-                // Redirect based on role
-                if ("admin".equals(user.getRole())) {
-                    response.sendRedirect(request.getContextPath() + "/Dashboard");
+                // Check if there's a redirect URL specified
+                if (redirect != null && !redirect.isEmpty()) {
+                    response.sendRedirect(request.getContextPath() + "/" + redirect);
                 } else {
-                    response.sendRedirect(request.getContextPath() + "/EventsServlet");
+                    // Check if we have a stored redirect URL in the session
+                    String storedRedirect = (String) session.getAttribute("redirectAfterLogin");
+                    if (storedRedirect != null && !storedRedirect.isEmpty()) {
+                        session.removeAttribute("redirectAfterLogin");
+                        response.sendRedirect(storedRedirect);
+                    } else {
+                        // Default redirects based on role
+                        if ("admin".equals(user.getRole())) {
+                            response.sendRedirect(request.getContextPath() + "/Dashboard");
+                        } else {
+                            response.sendRedirect(request.getContextPath() + "/EventsServlet");
+                        }
+                    }
                 }
             } else {
                 logger.warning("Login failed for email: " + email + " (user null or invalid ID)");
@@ -47,16 +58,32 @@ public class LoginServlet extends HttpServlet {
             request.setAttribute("errorMessage", "An error occurred. Please try again.");
             request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);
         }
-    }
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    }    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("currentUser") : null;
+        
+        // Save any redirect parameter to the session
+        String redirect = request.getParameter("redirect");
+        if (redirect != null && !redirect.isEmpty()) {
+            if (session == null) {
+                session = request.getSession();
+            }
+            session.setAttribute("redirectAfterLogin", request.getContextPath() + "/" + redirect);
+        }
+        
         if (user != null) {
+            // User is already logged in
             if ("admin".equals(user.getRole())) {
-                response.sendRedirect("Dashboard");
+                response.sendRedirect(request.getContextPath() + "/Dashboard");
             } else {
-                response.sendRedirect("EventsServlet");
+                // Check if there's a redirect URL in the session
+                String storedRedirect = (String) session.getAttribute("redirectAfterLogin");
+                if (storedRedirect != null && !storedRedirect.isEmpty()) {
+                    session.removeAttribute("redirectAfterLogin");
+                    response.sendRedirect(storedRedirect);
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/EventsServlet");
+                }
             }
         } else {
             request.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(request, response);

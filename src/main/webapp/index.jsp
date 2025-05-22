@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aayojana - Event Booking System</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Search feature quick access - for troubleshooting -->
+    <script>
+        function checkSearchFeature() {
+            window.location.href = 'search';
+            return false;
+        }
+    </script>
     <style>
         :root {
             --primary: #5928E5;
@@ -617,22 +624,19 @@
 <body>
 <!-- Header -->
 <header>
-    <div class="container header-container">
-        <a href="#" class="logo">Aayo<span>jana</span></a>
+    <div class="container header-container">        <a href="${pageContext.request.contextPath}/" class="logo">Aayo<span>jana</span></a>
         <nav>
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Events</a></li>
-                <li><a href="#">Features</a></li>
-                <li><a href="#">Pricing</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="${pageContext.request.contextPath}/" class="${pageContext.request.servletPath eq '/index.jsp' ? 'active' : ''}">Home</a></li>
+                <li><a href="${pageContext.request.contextPath}/EventsServlet" class="${pageContext.request.servletPath eq '/EventsServlet' ? 'active' : ''}">Events</a></li>
+                <li><a href="${pageContext.request.contextPath}/about" class="${pageContext.request.servletPath eq '/about.jsp' ? 'active' : ''}">About</a></li>
+                <li><a href="${pageContext.request.contextPath}/contact" class="${pageContext.request.servletPath eq '/contact.jsp' ? 'active' : ''}">Contact</a></li>
             </ul>
-        </nav>
-        <%
+        </nav><%
             if (session.getAttribute("currentUser") != null) {
         %>
 
-        <form action="logout" method="post">
+        <form action="${pageContext.request.contextPath}/logout" method="post">
             <button class="sign-in">Logout</button>
         </form>
         <%
@@ -654,9 +658,8 @@
         <div class="hero-text">
             <h1>Plan Your <span>Perfect Event</span> With Aayojana</h1>
             <p>The all-in-one platform for planning, managing, and hosting successful events of any size. From corporate conferences to intimate gatherings.</p>
-            <div class="hero-buttons">
-                <a href="#" class="btn btn-primary">Get Started</a>
-                <a href="#" class="btn btn-outline">Learn More</a>
+            <div class="hero-buttons">                <a href="EventsServlet" class="btn btn-primary">Get Started</a>
+                <a href="SearchEvents" class="btn btn-outline">Search Events</a>
             </div>
         </div>
         <div class="hero-image">
@@ -886,11 +889,10 @@
                     <li><a href="#">Community</a></li>
                 </ul>
             </div>
-            <div class="footer-column">
-                <h3>Legal</h3>
+            <div class="footer-column">                <h3>Legal</h3>
                 <ul>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="${pageContext.request.contextPath}/terms-of-service">Terms of Service</a></li>
+                    <li><a href="${pageContext.request.contextPath}/privacy-policy">Privacy Policy</a></li>
                     <li><a href="#">Cookie Policy</a></li>
                     <li><a href="#">GDPR Compliance</a></li>
                 </ul>

@@ -3,4 +3,27 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
+    
+    <!-- Servlet Definitions -->
+    <servlet>
+        <servlet-name>SearchServlet</servlet-name>
+        <servlet-class>controllers.SearchServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>SearchEventsServlet</servlet-name>
+        <servlet-class>controllers.SearchEventsServlet</servlet-class>
+    </servlet>
+    
+    <!-- Servlet Mappings -->
+    <servlet-mapping>
+        <servlet-name>SearchServlet</servlet-name>
+        <url-pattern>/search</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>SearchEventsServlet</servlet-name>
+        <url-pattern>/SearchEvents</url-pattern>
+    </servlet-mapping>
+    
 </web-app>

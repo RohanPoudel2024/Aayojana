@@ -18,9 +18,13 @@
     <button class="close-button">×</button>
 
     <h1>Welcome.</h1>
-    <p class="subtitle">Log in to your account</p>
-
-    <form action="login" method="post">
+    <p class="subtitle">Log in to your account</p>    <form action="${pageContext.request.contextPath}/login" method="post">
+        <%-- Include hidden redirect parameter if it exists --%>
+        <% String redirect = request.getParameter("redirect");
+           if (redirect != null && !redirect.isEmpty()) { %>
+           <input type="hidden" name="redirect" value="<%= redirect %>">
+        <% } %>
+        
         <div class="form-group">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" placeholder="Input" required>
@@ -32,13 +36,13 @@
                 <input type="password" id="password" name="password" placeholder="Input" required>
                 <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">⊙</button>
             </div>
-            <% String error = (String) request.getAttribute("error");
-                if (error != null) { %>
-            <p style="color:red; text-align:center;"><%= error %></p>
+            <% String errorMessage = (String) request.getAttribute("errorMessage");
+                if (errorMessage != null) { %>
+            <p style="color:red; text-align:center;"><%= errorMessage %></p>
             <% } %>
 
             <div class="forgot-password">
-                <a href="forgot-password.jsp">Forgot password?</a>
+                <a href="${pageContext.request.contextPath}/forgot-password">Forgot password?</a>
             </div>
         </div>
 

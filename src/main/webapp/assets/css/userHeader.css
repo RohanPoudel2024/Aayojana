@@ -148,6 +148,29 @@
   font-size: 0.875rem;
 }
 
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--error);
+  background-color: rgba(176, 0, 32, 0.1);
+  transition: all var(--transition-normal);
+  text-decoration: none;
+}
+
+.logout-btn i {
+  font-size: 1rem;
+}
+
+.logout-btn:hover {
+  background-color: var(--error);
+  color: var(--on-error);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .header {
@@ -166,5 +189,21 @@
   
   .user {
     order: 2;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .user-profile, .logout-btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .user-profile .icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logout-btn i {
+    font-size: 0.9rem;
   }
 }
